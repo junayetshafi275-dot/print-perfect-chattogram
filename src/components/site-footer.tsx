@@ -1,49 +1,40 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Youtube } from "lucide-react";
 
 export function SiteFooter() {
   return (
     <footer className="mt-24 bg-ink text-primary-foreground">
       <div className="container-x py-16 grid gap-10 md:grid-cols-4">
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 max-w-md">
           <div className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground font-display text-lg font-semibold">
-              F
-            </span>
+            <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground font-display text-lg font-semibold">F</span>
             <span className="font-display text-lg">Friends Printers</span>
           </div>
-          <p className="mt-4 max-w-md text-sm text-white/70 leading-relaxed">
-            A trusted printing partner in Anderkilla, Chattogram — delivering
-            quality craftsmanship, honest pricing, and dependable service since
-            day one.
+          <p className="mt-4 text-sm text-white/70 leading-relaxed">
+            Trusted printing partner in Anderkilla, Chattogram — quality craftsmanship, honest pricing, and dependable delivery for every job.
           </p>
+          <div className="mt-5 flex items-center gap-4 text-white/70">
+            <a href="https://facebook.com" aria-label="Facebook" className="hover:text-primary"><Facebook className="h-4 w-4" /></a>
+            <a href="https://instagram.com" aria-label="Instagram" className="hover:text-primary"><Instagram className="h-4 w-4" /></a>
+            <a href="https://youtube.com" aria-label="YouTube" className="hover:text-primary"><Youtube className="h-4 w-4" /></a>
+          </div>
         </div>
 
         <div>
-          <h4 className="text-sm font-medium text-white">Explore</h4>
+          <h4 className="text-sm font-medium text-white">Quick Links</h4>
           <ul className="mt-4 space-y-2 text-sm text-white/70">
-            <li><Link to="/" className="hover:text-primary">Home</Link></li>
-            <li><Link to="/services" className="hover:text-primary">Services</Link></li>
             <li><Link to="/about" className="hover:text-primary">About</Link></li>
+            <li><Link to="/services" className="hover:text-primary">Services</Link></li>
             <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-sm font-medium text-white">Get in touch</h4>
-          <ul className="mt-4 space-y-3 text-sm text-white/70">
-            <li className="flex items-start gap-2">
-              <MapPin className="h-4 w-4 mt-0.5 text-primary" />
-              <span>Anderkilla, Chattogram, Bangladesh</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Phone className="h-4 w-4 mt-0.5 text-primary" />
-              <span>+880 1XXX-XXXXXX</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Mail className="h-4 w-4 mt-0.5 text-primary" />
-              <span>hello@friendsprinters.com</span>
-            </li>
+          <h4 className="text-sm font-medium text-white">Site Map</h4>
+          <ul className="mt-4 space-y-2 text-sm text-white/70">
+            <li><Link to="/" className="hover:text-primary">Home</Link></li>
+            <li><Link to="/shop" className="hover:text-primary">Shop</Link></li>
+            <li><Link to="/blog" className="hover:text-primary">Blog</Link></li>
           </ul>
         </div>
       </div>

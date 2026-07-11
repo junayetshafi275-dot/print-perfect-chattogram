@@ -1,29 +1,39 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Facebook, Instagram, Youtube } from "lucide-react";
 
 const nav = [
   { to: "/", label: "Home" },
-  { to: "/services", label: "Services" },
+  { to: "/shop", label: "Shop" },
   { to: "/about", label: "About" },
+  { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },
+];
+
+const socials = [
+  { href: "https://facebook.com", label: "Facebook", Icon: Facebook },
+  { href: "https://instagram.com", label: "Instagram", Icon: Instagram },
+  { href: "https://youtube.com", label: "YouTube", Icon: Youtube },
 ];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
-      <div className="container-x flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground font-display text-lg font-semibold">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur">
+      <div className="container-x flex h-20 items-center justify-between gap-4">
+        <Link to="/" className="flex items-center gap-3 shrink-0">
+          <span className="grid h-10 w-10 place-items-center rounded-md bg-primary text-primary-foreground font-display text-lg font-semibold">
             F
           </span>
-          <span className="font-display text-lg tracking-tight">
-            Friends <span className="text-primary">Printers</span>
-          </span>
+          <div className="leading-tight">
+            <div className="font-display text-lg tracking-tight text-ink">
+              Friends <span className="text-primary">Printers</span>
+            </div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">Print. Delivered. Anderkilla.</div>
+          </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {nav.map((n) => (
             <Link
               key={n.to}
@@ -36,17 +46,24 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden lg:flex items-center gap-4">
+          <div className="flex items-center gap-3 pr-4 border-r border-border">
+            {socials.map(({ href, label, Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="text-ink-soft hover:text-primary transition-colors">
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
           <Link
             to="/contact"
             className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-90 transition"
           >
-            Request a Quote
+            Request Quote
           </Link>
         </div>
 
         <button
-          className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-ink"
+          className="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-ink"
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -55,8 +72,8 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-border bg-background">
-          <div className="container-x py-4 flex flex-col gap-3">
+        <div className="lg:hidden border-t border-border bg-background">
+          <div className="container-x py-4 flex flex-col gap-2">
             {nav.map((n) => (
               <Link
                 key={n.to}
@@ -68,12 +85,19 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
+            <div className="flex items-center gap-4 py-3">
+              {socials.map(({ href, label, Icon }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="text-ink-soft">
+                  <Icon className="h-5 w-5" />
+                </a>
+              ))}
+            </div>
             <Link
               to="/contact"
               onClick={() => setOpen(false)}
               className="inline-flex justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
             >
-              Request a Quote
+              Request Quote
             </Link>
           </div>
         </div>
