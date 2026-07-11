@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
+import { Route as SiteShopRouteImport } from './routes/_site.shop'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
+import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -30,6 +32,11 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
   path: '/',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteShopRoute = SiteShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteServicesRoute = SiteServicesRouteImport.update({
   id: '/services',
   path: '/services',
@@ -38,6 +45,11 @@ const SiteServicesRoute = SiteServicesRouteImport.update({
 const SiteContactRoute = SiteContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteBlogRoute = SiteBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteAboutRoute = SiteAboutRouteImport.update({
@@ -50,14 +62,18 @@ export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof SiteAboutRoute
+  '/blog': typeof SiteBlogRoute
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
+  '/shop': typeof SiteShopRoute
 }
 export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof SiteAboutRoute
+  '/blog': typeof SiteBlogRoute
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
+  '/shop': typeof SiteShopRoute
   '/': typeof SiteIndexRoute
 }
 export interface FileRoutesById {
@@ -65,22 +81,40 @@ export interface FileRoutesById {
   '/_site': typeof SiteRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_site/about': typeof SiteAboutRoute
+  '/_site/blog': typeof SiteBlogRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/services': typeof SiteServicesRoute
+  '/_site/shop': typeof SiteShopRoute
   '/_site/': typeof SiteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml' | '/about' | '/contact' | '/services'
+  fullPaths:
+    | '/'
+    | '/sitemap.xml'
+    | '/about'
+    | '/blog'
+    | '/contact'
+    | '/services'
+    | '/shop'
   fileRoutesByTo: FileRoutesByTo
-  to: '/sitemap.xml' | '/about' | '/contact' | '/services' | '/'
+  to:
+    | '/sitemap.xml'
+    | '/about'
+    | '/blog'
+    | '/contact'
+    | '/services'
+    | '/shop'
+    | '/'
   id:
     | '__root__'
     | '/_site'
     | '/sitemap.xml'
     | '/_site/about'
+    | '/_site/blog'
     | '/_site/contact'
     | '/_site/services'
+    | '/_site/shop'
     | '/_site/'
   fileRoutesById: FileRoutesById
 }
@@ -112,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteIndexRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/shop': {
+      id: '/_site/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof SiteShopRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/services': {
       id: '/_site/services'
       path: '/services'
@@ -126,6 +167,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteContactRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/blog': {
+      id: '/_site/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof SiteBlogRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/about': {
       id: '/_site/about'
       path: '/about'
@@ -138,15 +186,19 @@ declare module '@tanstack/react-router' {
 
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
+  SiteBlogRoute: typeof SiteBlogRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteServicesRoute: typeof SiteServicesRoute
+  SiteShopRoute: typeof SiteShopRoute
   SiteIndexRoute: typeof SiteIndexRoute
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
+  SiteBlogRoute: SiteBlogRoute,
   SiteContactRoute: SiteContactRoute,
   SiteServicesRoute: SiteServicesRoute,
+  SiteShopRoute: SiteShopRoute,
   SiteIndexRoute: SiteIndexRoute,
 }
 
