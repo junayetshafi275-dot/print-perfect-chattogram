@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, Facebook, Instagram, Youtube } from "lucide-react";
+import logo from "@/assets/friends-printers-logo.png";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -21,16 +22,12 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur">
       <div className="container-x flex h-20 items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-3 shrink-0">
-          <span className="grid h-10 w-10 place-items-center rounded-md bg-primary text-primary-foreground font-display text-lg font-semibold">
-            F
-          </span>
-          <div className="leading-tight">
-            <div className="font-display text-lg tracking-tight text-ink">
-              Friends <span className="text-primary">Printers</span>
-            </div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">Print. Delivered. Anderkilla.</div>
-          </div>
+        <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="Friends Printers home">
+          <img
+            src={logo}
+            alt="Friends Printers"
+            className="h-12 w-auto md:h-14"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
