@@ -56,10 +56,6 @@ function HomePage() {
               <div className="text-[10px] uppercase tracking-wider text-ink-soft">Limited offer</div>
               <div className="mt-0.5 font-display text-sm font-semibold text-ink">Free shipping over ৳5,000</div>
             </div>
-            <div className="hidden sm:block absolute -top-4 right-6 rounded-xl bg-primary text-primary-foreground px-4 py-3 shadow-elegant">
-              <div className="text-[10px] uppercase tracking-wider text-primary-foreground/80">Turnaround</div>
-              <div className="mt-0.5 font-display text-sm font-semibold">Custom in 24h</div>
-            </div>
           </div>
         </div>
       </section>
