@@ -4,6 +4,11 @@ import heroImg from "@/assets/hero-print.jpg";
 import { productCategories } from "@/lib/products-data";
 import { ProductCard } from "@/components/product-card";
 import { ReviewCarousel } from "@/components/review-carousel";
+import { Reveal, StaggerGrid, StaggerItem } from "@/components/reveal";
+
+const ctaBtn =
+  "inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft transition-[transform,background-color,opacity] duration-150 ease-out hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transform-none";
+
 
 export const Route = createFileRoute("/_site/")({
   component: HomePage,
@@ -34,13 +39,11 @@ function HomePage() {
               Business cards, banners, invitations and bespoke print — designed, produced and shipped by a print house you can trust.
             </p>
             <div className="mt-8">
-              <Link
-                to="/shop"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft hover:opacity-90 transition"
-              >
+              <Link to="/shop" className={ctaBtn}>
                 Shop Now <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
+
           </div>
 
           <div className="relative">
@@ -61,7 +64,7 @@ function HomePage() {
       </section>
 
       {/* Trust strip — slim bar */}
-      <section className="border-y border-border bg-paper">
+      <Reveal as="section" className="border-y border-border bg-paper">
         <div className="container-x py-4">
           <ul className="grid grid-cols-2 md:flex md:items-center md:justify-between gap-3 md:gap-6 text-sm">
             {trust.map(({ Icon, label }) => (
@@ -72,13 +75,13 @@ function HomePage() {
             ))}
           </ul>
         </div>
-      </section>
+      </Reveal>
 
       {/* Product grids — alternating backgrounds */}
       {productCategories.map((cat, i) => (
         <section key={cat.slug} className={i % 2 === 1 ? "bg-paper" : ""}>
           <div className="container-x py-16 md:py-20">
-            <div className="flex flex-wrap items-end justify-between gap-4">
+            <Reveal className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">Shop the category</p>
                 <h2 className="mt-2 font-display text-3xl sm:text-4xl text-ink">{cat.title}</h2>
@@ -89,29 +92,32 @@ function HomePage() {
               >
                 View all <ArrowRight className="h-4 w-4" />
               </Link>
-            </div>
+            </Reveal>
 
-            <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <StaggerGrid className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {cat.products.slice(0, 4).map((p) => (
-                <ProductCard key={p.id} product={p} />
+                <StaggerItem key={p.id}>
+                  <ProductCard product={p} />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerGrid>
           </div>
         </section>
       ))}
 
+
       {/* Short trust paragraph */}
-      <section className="border-y border-border">
+      <Reveal as="section" className="border-y border-border">
         <div className="container-x py-16 max-w-3xl text-center">
           <p className="text-xs uppercase tracking-[0.25em] text-primary font-medium">Why customers stay with us</p>
           <p className="mt-5 font-display text-2xl sm:text-3xl text-ink leading-snug">
             Rooted in Anderkilla, Chattogram's printing district — Friends Printers combines skilled offset and digital press work with a trusted network of finishing partners, so your order arrives on time, on brand and on budget.
           </p>
         </div>
-      </section>
+      </Reveal>
 
       {/* Social proof — single consolidated carousel */}
-      <section className="bg-paper">
+      <Reveal as="section" className="bg-paper">
         <div className="container-x py-16 md:py-20">
           <div className="text-center max-w-2xl mx-auto">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">What clients say</p>
@@ -121,7 +127,8 @@ function HomePage() {
             <ReviewCarousel />
           </div>
         </div>
-      </section>
+      </Reveal>
+
 
       {/* Closing CTA */}
       <section>
@@ -133,12 +140,10 @@ function HomePage() {
             Browse our shop or send us your specs — we'll reply with a tailored quote within one business day.
           </p>
           <div className="mt-8">
-            <Link
-              to="/shop"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft hover:opacity-90 transition"
-            >
+            <Link to="/shop" className={ctaBtn}>
               Shop Now <ArrowRight className="h-4 w-4" />
             </Link>
+
           </div>
         </div>
       </section>
