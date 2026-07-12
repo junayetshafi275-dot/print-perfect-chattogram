@@ -4,6 +4,11 @@ import heroImg from "@/assets/hero-print.jpg";
 import { productCategories } from "@/lib/products-data";
 import { ProductCard } from "@/components/product-card";
 import { ReviewCarousel } from "@/components/review-carousel";
+import { Reveal, StaggerGrid, StaggerItem } from "@/components/reveal";
+
+const ctaBtn =
+  "inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft transition-[transform,background-color,opacity] duration-150 ease-out hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transform-none";
+
 
 export const Route = createFileRoute("/_site/")({
   component: HomePage,
@@ -34,13 +39,11 @@ function HomePage() {
               Business cards, banners, invitations and bespoke print — designed, produced and shipped by a print house you can trust.
             </p>
             <div className="mt-8">
-              <Link
-                to="/shop"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft hover:opacity-90 transition"
-              >
+              <Link to="/shop" className={ctaBtn}>
                 Shop Now <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
+
           </div>
 
           <div className="relative">
