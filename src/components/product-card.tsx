@@ -10,13 +10,13 @@ function formatPrice(n: number) {
 export function ProductCard({ product }: { product: Product }) {
   const onSale = product.originalPrice && product.originalPrice > product.price;
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-xl bg-background border border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant">
+    <article className="group relative flex flex-col overflow-hidden rounded-xl bg-background border border-border transition-[transform,box-shadow] duration-200 ease-out will-change-transform hover:-translate-y-1.5 hover:shadow-elegant motion-reduce:transform-none motion-reduce:transition-none">
       <div className="relative aspect-square overflow-hidden bg-muted">
         <img
           src={product.image}
           alt={product.name}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
         />
         {product.badge && (
           <span className="absolute top-3 left-3 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground shadow-soft">
