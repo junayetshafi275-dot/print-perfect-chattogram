@@ -45,6 +45,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "marketing",
     title: "Marketing & Promotion",
     href: "/shop",
+    icon: Megaphone,
+    eyebrow: "Reach & attract",
     products: [
       { id: "poster-a3", name: "A3 Full-Colour Posters (50)", category: "Posters", image: marketing, price: 1400, badge: "Popular" },
       { id: "banner-vinyl", name: "Vinyl Banner (per sq. ft)", category: "Banners", image: marketing, price: 45 },
