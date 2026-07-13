@@ -27,7 +27,12 @@ function HomePage() {
     <>
       {/* Hero — split layout */}
       <section className="relative overflow-hidden">
-        <div className="container-x pt-14 pb-16 md:pt-20 md:pb-24 grid gap-10 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:items-center">
+        {/* Soft accent glow behind hero image */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 right-[-10%] h-[520px] w-[520px] rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="container-x relative pt-14 pb-16 md:pt-20 md:pb-24 grid gap-10 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:items-center">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-primary">
               <MapPin className="h-3.5 w-3.5" />
@@ -63,6 +68,7 @@ function HomePage() {
           </div>
         </div>
       </section>
+
 
       {/* Trust strip — slim bar */}
       <Reveal as="section" className="border-y border-border bg-paper">
