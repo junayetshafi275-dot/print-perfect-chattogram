@@ -4,6 +4,7 @@ import marketing from "@/assets/marketing.jpg";
 import education from "@/assets/education.jpg";
 import event from "@/assets/event.jpg";
 import custom from "@/assets/custom.jpg";
+import { Briefcase, Megaphone, Sparkles, Palette, type LucideIcon } from "lucide-react";
 
 export type Product = {
   id: string;
@@ -19,6 +20,8 @@ export type CategoryGrid = {
   slug: string;
   title: string;
   href: string;
+  icon: LucideIcon;
+  eyebrow: string;
   products: Product[];
 };
 
