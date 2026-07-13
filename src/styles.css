@@ -118,6 +118,32 @@
   animation: wa-pulse 3.2s ease-in-out infinite;
 }
 
+/* Subtle paper-grain dot pattern — barely visible, echoes printed stock */
+@utility bg-paper-grain {
+  background-color: var(--color-paper);
+  background-image:
+    radial-gradient(oklch(0.35 0.01 25 / 0.05) 1px, transparent 1px),
+    radial-gradient(oklch(0.35 0.01 25 / 0.035) 1px, transparent 1px);
+  background-size: 22px 22px, 13px 13px;
+  background-position: 0 0, 7px 11px;
+}
+
+/* Small centered accent-red rule used above section headings */
+@utility divider-mark {
+  display: block;
+  width: 56px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* Layered ambient shadow — makes cards feel like objects at rest */
+@utility shadow-card {
+  box-shadow:
+    0 1px 2px oklch(0.2 0.02 20 / 0.04),
+    0 4px 14px -8px oklch(0.2 0.02 20 / 0.08);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
