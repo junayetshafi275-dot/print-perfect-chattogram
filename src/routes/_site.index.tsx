@@ -95,7 +95,7 @@ function HomePage() {
                   <span className="divider-mark mb-5" aria-hidden />
                   <div className="flex items-center gap-3">
                     <span className="grid h-9 w-9 place-items-center rounded-lg bg-accent text-primary ring-1 ring-primary/10">
-                      <Icon className="h-4.5 w-4.5" strokeWidth={1.75} />
+                      <Icon className="h-5 w-5" strokeWidth={1.75} />
                     </span>
                     <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">{cat.eyebrow}</p>
                   </div>
