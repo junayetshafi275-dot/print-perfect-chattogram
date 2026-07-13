@@ -28,7 +28,7 @@ function ShopPage() {
       </section>
 
       {productCategories.map((cat, i) => (
-        <section key={cat.slug} className={i % 2 === 1 ? "bg-paper" : ""}>
+        <section key={cat.slug} className={i % 2 === 1 ? "bg-paper-grain" : ""}>
           <div className="container-x py-14">
             <h2 className="font-display text-2xl sm:text-3xl text-ink">{cat.title}</h2>
             <div className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">

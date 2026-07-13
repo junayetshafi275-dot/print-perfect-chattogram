@@ -5,6 +5,7 @@ import { productCategories } from "@/lib/products-data";
 import { ProductCard } from "@/components/product-card";
 import { ReviewCarousel } from "@/components/review-carousel";
 import { Reveal, StaggerGrid, StaggerItem } from "@/components/reveal";
+import { StatCounter } from "@/components/stat-counter";
 
 const ctaBtn =
   "inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft transition-[transform,background-color,opacity] duration-150 ease-out hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transform-none";
@@ -26,7 +27,12 @@ function HomePage() {
     <>
       {/* Hero — split layout */}
       <section className="relative overflow-hidden">
-        <div className="container-x pt-14 pb-16 md:pt-20 md:pb-24 grid gap-10 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:items-center">
+        {/* Soft accent glow behind hero image */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 right-[-10%] h-[520px] w-[520px] rounded-full bg-primary/10 blur-3xl"
+        />
+        <div className="container-x relative pt-14 pb-16 md:pt-20 md:pb-24 grid gap-10 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:items-center">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-primary">
               <MapPin className="h-3.5 w-3.5" />
@@ -63,6 +69,7 @@ function HomePage() {
         </div>
       </section>
 
+
       {/* Trust strip — slim bar */}
       <Reveal as="section" className="border-y border-border bg-paper">
         <div className="container-x py-4">
@@ -78,37 +85,66 @@ function HomePage() {
       </Reveal>
 
       {/* Product grids — alternating backgrounds */}
-      {productCategories.map((cat, i) => (
-        <section key={cat.slug} className={i % 2 === 1 ? "bg-paper" : ""}>
-          <div className="container-x py-16 md:py-20">
-            <Reveal className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">Shop the category</p>
-                <h2 className="mt-2 font-display text-3xl sm:text-4xl text-ink">{cat.title}</h2>
-              </div>
-              <Link
-                to="/shop"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all"
-              >
-                View all <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Reveal>
+      {productCategories.map((cat, i) => {
+        const Icon = cat.icon;
+        return (
+          <section key={cat.slug} className={i % 2 === 1 ? "bg-paper-grain" : ""}>
+            <div className="container-x py-16 md:py-20">
+              <Reveal className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <span className="divider-mark mb-5" aria-hidden />
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-9 w-9 place-items-center rounded-lg bg-accent text-primary ring-1 ring-primary/10">
+                      <Icon className="h-5 w-5" strokeWidth={1.75} />
+                    </span>
+                    <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">{cat.eyebrow}</p>
+                  </div>
+                  <h2 className="mt-3 font-display text-3xl sm:text-4xl text-ink">{cat.title}</h2>
+                </div>
+                <Link
+                  to="/shop"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all"
+                >
+                  View all <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Reveal>
 
-            <StaggerGrid className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {cat.products.slice(0, 4).map((p) => (
-                <StaggerItem key={p.id}>
-                  <ProductCard product={p} />
-                </StaggerItem>
-              ))}
-            </StaggerGrid>
+              <StaggerGrid className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {cat.products.slice(0, 4).map((p) => (
+                  <StaggerItem key={p.id}>
+                    <ProductCard product={p} />
+                  </StaggerItem>
+                ))}
+              </StaggerGrid>
+            </div>
+          </section>
+        );
+      })}
+
+
+      {/* By the numbers */}
+      <Reveal as="section" className="border-y border-border bg-paper-grain">
+        <div className="container-x py-16 md:py-20">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <span className="divider-mark mx-auto mb-5" aria-hidden />
+            <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">By the numbers</p>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl text-ink">A press-room built on trust</h2>
           </div>
-        </section>
-      ))}
-
+          <StatCounter
+            stats={[
+              { value: 15, suffix: "+", label: "Years in Anderkilla" },
+              { value: 2400, suffix: "+", label: "Orders delivered" },
+              { value: 24, suffix: "h", label: "Typical turnaround" },
+              { value: 98, suffix: "%", label: "Repeat clients" },
+            ]}
+          />
+        </div>
+      </Reveal>
 
       {/* Short trust paragraph */}
-      <Reveal as="section" className="border-y border-border">
+      <Reveal as="section" className="border-b border-border">
         <div className="container-x py-16 max-w-3xl text-center">
+          <span className="divider-mark mx-auto mb-5" aria-hidden />
           <p className="text-xs uppercase tracking-[0.25em] text-primary font-medium">Why customers stay with us</p>
           <p className="mt-5 font-display text-2xl sm:text-3xl text-ink leading-snug">
             Rooted in Anderkilla, Chattogram's printing district — Friends Printers combines skilled offset and digital press work with a trusted network of finishing partners, so your order arrives on time, on brand and on budget.
@@ -117,9 +153,10 @@ function HomePage() {
       </Reveal>
 
       {/* Social proof — single consolidated carousel */}
-      <Reveal as="section" className="bg-paper">
+      <Reveal as="section" className="bg-paper-grain">
         <div className="container-x py-16 md:py-20">
           <div className="text-center max-w-2xl mx-auto">
+            <span className="divider-mark mx-auto mb-5" aria-hidden />
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">What clients say</p>
             <h2 className="mt-3 font-display text-3xl sm:text-4xl text-ink">Rated 4.9 by hundreds of businesses across Chattogram</h2>
           </div>
@@ -128,6 +165,7 @@ function HomePage() {
           </div>
         </div>
       </Reveal>
+
 
 
       {/* Closing CTA */}

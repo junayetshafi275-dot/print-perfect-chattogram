@@ -4,6 +4,7 @@ import marketing from "@/assets/marketing.jpg";
 import education from "@/assets/education.jpg";
 import event from "@/assets/event.jpg";
 import custom from "@/assets/custom.jpg";
+import { Briefcase, Megaphone, Sparkles, Palette, type LucideIcon } from "lucide-react";
 
 export type Product = {
   id: string;
@@ -19,6 +20,8 @@ export type CategoryGrid = {
   slug: string;
   title: string;
   href: string;
+  icon: LucideIcon;
+  eyebrow: string;
   products: Product[];
 };
 
@@ -27,6 +30,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "business-essentials",
     title: "Business Essentials",
     href: "/shop",
+    icon: Briefcase,
+    eyebrow: "Everyday essentials",
     products: [
       { id: "bc-premium", name: "Premium Business Cards (500)", category: "Business Cards", image: commercial, price: 1200, originalPrice: 1500, badge: "Bestseller" },
       { id: "bc-matte", name: "Matte Business Cards (500)", category: "Business Cards", image: commercial, price: 950 },
@@ -40,6 +45,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "marketing",
     title: "Marketing & Promotion",
     href: "/shop",
+    icon: Megaphone,
+    eyebrow: "Reach & attract",
     products: [
       { id: "poster-a3", name: "A3 Full-Colour Posters (50)", category: "Posters", image: marketing, price: 1400, badge: "Popular" },
       { id: "banner-vinyl", name: "Vinyl Banner (per sq. ft)", category: "Banners", image: marketing, price: 45 },
@@ -53,6 +60,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "events",
     title: "Events & Invitations",
     href: "/shop",
+    icon: Sparkles,
+    eyebrow: "Occasions & moments",
     products: [
       { id: "wedding-classic", name: "Classic Wedding Invitation (100)", category: "Weddings", image: event, price: 2800, originalPrice: 3200, badge: "New" },
       { id: "wedding-foil", name: "Gold Foil Invitation (100)", category: "Weddings", image: event, price: 4500 },
@@ -66,6 +75,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "custom",
     title: "Custom & Bespoke Print",
     href: "/shop",
+    icon: Palette,
+    eyebrow: "Made-to-order",
     products: [
       { id: "book", name: "Perfect-Bound Book Print", category: "Books", image: education, price: 0, badge: "Quote" },
       { id: "diary", name: "Custom Diary / Notebook", category: "Notebooks", image: office, price: 350 },
