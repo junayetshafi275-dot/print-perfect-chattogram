@@ -60,6 +60,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "events",
     title: "Events & Invitations",
     href: "/shop",
+    icon: Sparkles,
+    eyebrow: "Occasions & moments",
     products: [
       { id: "wedding-classic", name: "Classic Wedding Invitation (100)", category: "Weddings", image: event, price: 2800, originalPrice: 3200, badge: "New" },
       { id: "wedding-foil", name: "Gold Foil Invitation (100)", category: "Weddings", image: event, price: 4500 },
