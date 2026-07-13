@@ -30,6 +30,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "business-essentials",
     title: "Business Essentials",
     href: "/shop",
+    icon: Briefcase,
+    eyebrow: "Everyday essentials",
     products: [
       { id: "bc-premium", name: "Premium Business Cards (500)", category: "Business Cards", image: commercial, price: 1200, originalPrice: 1500, badge: "Bestseller" },
       { id: "bc-matte", name: "Matte Business Cards (500)", category: "Business Cards", image: commercial, price: 950 },
