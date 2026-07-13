@@ -5,6 +5,7 @@ import { productCategories } from "@/lib/products-data";
 import { ProductCard } from "@/components/product-card";
 import { ReviewCarousel } from "@/components/review-carousel";
 import { Reveal, StaggerGrid, StaggerItem } from "@/components/reveal";
+import { StatCounter } from "@/components/stat-counter";
 
 const ctaBtn =
   "inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft transition-[transform,background-color,opacity] duration-150 ease-out hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transform-none";
