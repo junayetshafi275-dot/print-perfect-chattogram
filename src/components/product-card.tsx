@@ -10,7 +10,7 @@ function formatPrice(n: number) {
 export function ProductCard({ product }: { product: Product }) {
   const onSale = product.originalPrice && product.originalPrice > product.price;
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-xl bg-background border border-border transition-[transform,box-shadow] duration-200 ease-out will-change-transform hover:-translate-y-1.5 hover:shadow-elegant motion-reduce:transform-none motion-reduce:transition-none">
+    <article className="group relative flex flex-col overflow-hidden rounded-xl bg-background border border-border shadow-card transition-[transform,box-shadow] duration-200 ease-out will-change-transform hover:-translate-y-1.5 hover:shadow-elegant motion-reduce:transform-none motion-reduce:transition-none">
       <div className="relative aspect-square overflow-hidden bg-muted">
         <img
           src={product.image}
