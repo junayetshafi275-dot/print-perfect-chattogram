@@ -99,8 +99,8 @@ function ContactPage() {
                   <Send className="h-6 w-6" />
                 </div>
                 <h3 className="mt-6 font-display text-2xl text-ink">Thanks — message received</h3>
-                <p className="mt-2 text-ink-soft">
-                  We'll get back to you shortly with a quote and next steps.
+                <p className="mt-2 text-ink-soft max-w-sm mx-auto">
+                  Your enquiry just landed on the press-room desk. A real human from Anderkilla will reply within one business day — usually much sooner.
                 </p>
               </div>
             ) : (
