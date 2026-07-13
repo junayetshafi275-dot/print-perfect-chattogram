@@ -75,6 +75,8 @@ export const productCategories: CategoryGrid[] = [
     slug: "custom",
     title: "Custom & Bespoke Print",
     href: "/shop",
+    icon: Palette,
+    eyebrow: "Made-to-order",
     products: [
       { id: "book", name: "Perfect-Bound Book Print", category: "Books", image: education, price: 0, badge: "Quote" },
       { id: "diary", name: "Custom Diary / Notebook", category: "Notebooks", image: office, price: 350 },
