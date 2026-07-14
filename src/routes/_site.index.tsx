@@ -12,6 +12,46 @@ const ctaBtn =
 
 
 export const Route = createFileRoute("/_site/")({
+  head: () => ({
+    meta: [
+      { title: "Friends Printers — Trusted Printing in Anderkilla, Chattogram" },
+      {
+        name: "description",
+        content:
+          "Custom business cards, brochures, banners, books and packaging — printed at our Anderkilla press in Chattogram. Fast turnaround, honest pricing.",
+      },
+      { property: "og:title", content: "Friends Printers — Trusted Printing in Chattogram" },
+      {
+        property: "og:description",
+        content:
+          "Full-service printing from Anderkilla — Chattogram's printing district. Request a quote for your next project.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: "Friends Printers",
+          description:
+            "Full-service printing company in Anderkilla, Chattogram — business cards, brochures, banners, books, invitations and custom print work.",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Anderkilla",
+            addressLocality: "Chattogram",
+            addressCountry: "BD",
+          },
+          areaServed: "Chattogram, Bangladesh",
+          priceRange: "৳৳",
+          url: "/",
+        }),
+      },
+    ],
+  }),
   component: HomePage,
 });
 

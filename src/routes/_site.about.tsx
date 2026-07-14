@@ -5,19 +5,21 @@ import aboutImg from "@/assets/about.jpg";
 export const Route = createFileRoute("/_site/about")({
   head: () => ({
     meta: [
-      { title: "About Friends Printers — Anderkilla, Chattogram" },
+      { title: "About Friends Printers — Anderkilla, Chattogram Print House" },
       {
         name: "description",
         content:
           "Friends Printers is a full-service printing company in Anderkilla, Chattogram — combining craftsmanship, efficient production and dependable service.",
       },
-      { property: "og:title", content: "About Friends Printers" },
+      { property: "og:title", content: "About Friends Printers — Our Story & Mission" },
       {
         property: "og:description",
         content:
           "Trusted printing partner in Chattogram's printing district, delivering quality print for businesses, schools and individuals.",
       },
+      { property: "og:url", content: "/about" },
     ],
+    links: [{ rel: "canonical", href: "/about" }],
   }),
   component: AboutPage,
 });

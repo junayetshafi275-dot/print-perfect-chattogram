@@ -6,17 +6,36 @@ import { services } from "@/lib/services-data";
 export const Route = createFileRoute("/_site/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Friends Printers — Get a Quote" },
+      { title: "Contact Friends Printers — Request a Print Quote in Chattogram" },
       {
         name: "description",
         content:
           "Request a quote or get in touch with Friends Printers in Anderkilla, Chattogram. Fast responses on business, marketing and custom print jobs.",
       },
-      { property: "og:title", content: "Contact Friends Printers" },
+      { property: "og:title", content: "Contact Friends Printers — Get a Print Quote" },
       {
         property: "og:description",
         content:
           "Reach out for quotes, consultations or custom printing enquiries in Chattogram.",
+      },
+      { property: "og:url", content: "/contact" },
+    ],
+    links: [{ rel: "canonical", href: "/contact" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: "Friends Printers",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Anderkilla",
+            addressLocality: "Chattogram",
+            addressCountry: "BD",
+          },
+          url: "/contact",
+        }),
       },
     ],
   }),

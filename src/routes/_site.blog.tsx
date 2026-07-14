@@ -7,11 +7,13 @@ import event from "@/assets/event.jpg";
 export const Route = createFileRoute("/_site/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — Print Tips & Ideas | Friends Printers" },
-      { name: "description", content: "Guides on paper, finishing, print design and getting the best results from your next print job." },
-      { property: "og:title", content: "Blog — Friends Printers" },
-      { property: "og:description", content: "Print tips, paper guides and ideas from Friends Printers." },
+      { title: "Print Blog — Paper Guides & Design Tips | Friends Printers" },
+      { name: "description", content: "Guides on paper, finishing, print design and getting the best results from your next print job — from the Friends Printers press floor." },
+      { property: "og:title", content: "Print Tips & Ideas — Friends Printers Blog" },
+      { property: "og:description", content: "Print tips, paper guides and ideas from Friends Printers in Chattogram." },
+      { property: "og:url", content: "/blog" },
     ],
+    links: [{ rel: "canonical", href: "/blog" }],
   }),
   component: BlogPage,
 });
