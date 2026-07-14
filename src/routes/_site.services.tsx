@@ -5,19 +5,21 @@ import { services } from "@/lib/services-data";
 export const Route = createFileRoute("/_site/services")({
   head: () => ({
     meta: [
-      { title: "Printing Services — Friends Printers, Chattogram" },
+      { title: "Printing Services — Commercial, Marketing & Custom | Friends Printers" },
       {
         name: "description",
         content:
           "Explore commercial, office, marketing, educational, event and custom printing services from Friends Printers in Anderkilla, Chattogram.",
       },
-      { property: "og:title", content: "Printing Services — Friends Printers" },
+      { property: "og:title", content: "Printing Services in Chattogram — Friends Printers" },
       {
         property: "og:description",
         content:
           "Business cards, brochures, banners, books, invitations and custom print work — professionally produced in Chattogram.",
       },
+      { property: "og:url", content: "/services" },
     ],
+    links: [{ rel: "canonical", href: "/services" }],
   }),
   component: ServicesPage,
 });

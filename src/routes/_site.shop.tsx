@@ -5,11 +5,13 @@ import { productCategories } from "@/lib/products-data";
 export const Route = createFileRoute("/_site/shop")({
   head: () => ({
     meta: [
-      { title: "Shop — Friends Printers | Custom Printing in Chattogram" },
+      { title: "Shop Print Products — Business Cards, Banners & More | Friends Printers" },
       { name: "description", content: "Browse our full range of print products: business cards, banners, invitations, packaging and custom print work. Delivered from Anderkilla, Chattogram." },
-      { property: "og:title", content: "Shop — Friends Printers" },
+      { property: "og:title", content: "Shop Print Products — Friends Printers Chattogram" },
       { property: "og:description", content: "Custom printing products delivered from Anderkilla, Chattogram." },
+      { property: "og:url", content: "/shop" },
     ],
+    links: [{ rel: "canonical", href: "/shop" }],
   }),
   component: ShopPage,
 });
