@@ -9,7 +9,7 @@ type RevealProps = {
   as?: "div" | "section" | "li" | "article";
 } & Omit<HTMLMotionProps<"div">, "children">;
 
-export function Reveal({ children, delay = 0, y = 16, className, as = "div", ...rest }: RevealProps) {
+export function Reveal({ children, delay = 0, y = 28, className, as = "div", ...rest }: RevealProps) {
   const reduce = useReducedMotion();
   const MotionTag = motion[as] as typeof motion.div;
 
@@ -20,10 +20,10 @@ export function Reveal({ children, delay = 0, y = 16, className, as = "div", ...
   return (
     <MotionTag
       className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y, filter: "blur(6px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
       {...rest}
     >
       {children}
@@ -34,7 +34,7 @@ export function Reveal({ children, delay = 0, y = 16, className, as = "div", ...
 export function StaggerGrid({
   children,
   className,
-  stagger = 0.06,
+  stagger = 0.09,
 }: {
   children: ReactNode;
   className?: string;
@@ -47,10 +47,10 @@ export function StaggerGrid({
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: "-8% 0px -8% 0px" }}
       variants={{
         hidden: {},
-        visible: { transition: { staggerChildren: stagger } },
+        visible: { transition: { staggerChildren: stagger, delayChildren: 0.05 } },
       }}
     >
       {children}
@@ -65,8 +65,8 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
     <motion.div
       className={className}
       variants={{
-        hidden: { opacity: 0, y: 16 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+        hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
+        visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
       }}
     >
       {children}
