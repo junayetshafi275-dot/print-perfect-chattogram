@@ -64,7 +64,9 @@ async function fileExists(p) {
 }
 
 async function captureAll() {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(
+    process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {},
+  );
   const results = [];
   try {
     for (const vp of VIEWPORTS) {
