@@ -9,7 +9,13 @@ type RevealProps = {
   as?: "div" | "section" | "li" | "article";
 } & Omit<HTMLMotionProps<"div">, "children">;
 
-export function Reveal({ children, delay = 0, y = 28, className, as = "div", ...rest }: RevealProps) {
+// Shared viewport config — one IntersectionObserver per element, fires once.
+const VIEWPORT = { once: true, margin: "0px 0px -12% 0px" } as const;
+
+// Transform + opacity only — no filter/blur (blur triggers full repaints on every frame).
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+export function Reveal({ children, delay = 0, y = 24, className, as = "div", ...rest }: RevealProps) {
   const reduce = useReducedMotion();
   const MotionTag = motion[as] as typeof motion.div;
 
@@ -20,10 +26,11 @@ export function Reveal({ children, delay = 0, y = 28, className, as = "div", ...
   return (
     <MotionTag
       className={className}
-      initial={{ opacity: 0, y, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
+      style={{ willChange: "transform, opacity" }}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VIEWPORT}
+      transition={{ duration: 0.7, delay, ease: EASE }}
       {...rest}
     >
       {children}
@@ -31,10 +38,15 @@ export function Reveal({ children, delay = 0, y = 28, className, as = "div", ...
   );
 }
 
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+};
+
 export function StaggerGrid({
   children,
   className,
-  stagger = 0.09,
+  stagger = 0.07,
 }: {
   children: ReactNode;
   className?: string;
@@ -47,10 +59,10 @@ export function StaggerGrid({
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-8% 0px -8% 0px" }}
+      viewport={VIEWPORT}
       variants={{
         hidden: {},
-        visible: { transition: { staggerChildren: stagger, delayChildren: 0.05 } },
+        visible: { transition: { staggerChildren: stagger, delayChildren: 0.04 } },
       }}
     >
       {children}
@@ -62,13 +74,7 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
   const reduce = useReducedMotion();
   if (reduce) return <div className={className}>{children}</div>;
   return (
-    <motion.div
-      className={className}
-      variants={{
-        hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
-        visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-      }}
-    >
+    <motion.div className={className} style={{ willChange: "transform, opacity" }} variants={itemVariants}>
       {children}
     </motion.div>
   );
