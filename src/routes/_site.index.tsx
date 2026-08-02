@@ -156,8 +156,26 @@ function HomePage() {
       {productCategories.map((cat, i) => {
         const Icon = cat.icon;
         return (
-          <section key={cat.slug} className={i % 2 === 1 ? "bg-paper-grain" : ""}>
-            <div className="container-x py-16 md:py-20">
+          <section
+            key={cat.slug}
+            className={i % 2 === 1 ? "bg-paper-grain" : "relative overflow-hidden"}
+          >
+            {i % 2 !== 1 && (
+              <svg
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 h-full w-full"
+                viewBox="0 0 400 400"
+                preserveAspectRatio="none"
+              >
+                <g stroke="var(--color-primary)" strokeWidth={1.5} strokeOpacity={0.045}>
+                  <line x1={-120} y1={480} x2={480} y2={-120} />
+                  <line x1={60} y1={480} x2={660} y2={-120} />
+                  <line x1={240} y1={480} x2={840} y2={-120} />
+                </g>
+              </svg>
+            )}
+            <div className="container-x relative py-16 md:py-20">
+
               <Reveal className="flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <span className="divider-mark mb-5" aria-hidden />
