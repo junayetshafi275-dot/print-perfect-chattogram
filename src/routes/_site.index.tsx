@@ -125,8 +125,21 @@ function HomePage() {
 
 
       {/* Trust strip — slim bar */}
-      <Reveal as="section" className="border-y border-border bg-paper">
-        <div className="container-x py-4">
+      <Reveal as="section" className="relative overflow-hidden border-y border-border bg-paper">
+        {/* Continuation of the hero diagonal texture — same angle, spacing and opacity */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 400 400"
+          preserveAspectRatio="none"
+        >
+          <g stroke="var(--color-primary)" strokeWidth={1.5} strokeOpacity={0.18}>
+            <line x1={-50} y1={450} x2={550} y2={-150} />
+            <line x1={0} y1={450} x2={600} y2={-150} />
+            <line x1={50} y1={450} x2={650} y2={-150} />
+          </g>
+        </svg>
+        <div className="container-x relative py-4">
           <ul className="grid grid-cols-2 md:flex md:items-center md:justify-between gap-3 md:gap-6 text-sm">
             {trust.map(({ Icon, label }) => (
               <li key={label} className="flex items-center justify-center md:justify-start gap-2 text-ink">
@@ -137,6 +150,7 @@ function HomePage() {
           </ul>
         </div>
       </Reveal>
+
 
       {/* Product grids — alternating backgrounds */}
       {productCategories.map((cat, i) => {
