@@ -72,6 +72,20 @@ function HomePage() {
           aria-hidden
           className="pointer-events-none absolute -top-24 right-[-10%] h-[520px] w-[520px] rounded-full bg-primary/10 blur-3xl"
         />
+        {/* Subtle diagonal line texture */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 400 400"
+          preserveAspectRatio="none"
+        >
+          <g stroke="var(--color-primary)" strokeWidth={1.5} strokeOpacity={0.18}>
+            <line x1={-50} y1={450} x2={550} y2={-150} />
+            <line x1={0} y1={450} x2={600} y2={-150} />
+            <line x1={50} y1={450} x2={650} y2={-150} />
+          </g>
+        </svg>
+
         <div className="container-x relative pt-14 pb-16 md:pt-20 md:pb-24 grid gap-10 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:items-center">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-primary">
