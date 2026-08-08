@@ -6,6 +6,7 @@ import logo from "@/assets/friends-printers-logo.png";
 const nav = [
   { to: "/", label: "Home" },
   { to: "/shop", label: "Shop" },
+  { to: "/track", label: "Track Order" },
   { to: "/about", label: "About" },
   { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },

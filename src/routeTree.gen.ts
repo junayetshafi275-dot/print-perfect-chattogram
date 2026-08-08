@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
+import { Route as SiteTrackRouteImport } from './routes/_site.track'
 import { Route as SiteShopRouteImport } from './routes/_site.shop'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
@@ -30,6 +31,11 @@ const SiteRoute = SiteRouteImport.update({
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteTrackRoute = SiteTrackRouteImport.update({
+  id: '/track',
+  path: '/track',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteShopRoute = SiteShopRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
+  '/track': typeof SiteTrackRoute
 }
 export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
+  '/track': typeof SiteTrackRoute
   '/': typeof SiteIndexRoute
 }
 export interface FileRoutesById {
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/_site/contact': typeof SiteContactRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/shop': typeof SiteShopRoute
+  '/_site/track': typeof SiteTrackRoute
   '/_site/': typeof SiteIndexRoute
 }
 export interface FileRouteTypes {
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/services'
     | '/shop'
+    | '/track'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sitemap.xml'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/services'
     | '/shop'
+    | '/track'
     | '/'
   id:
     | '__root__'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/_site/contact'
     | '/_site/services'
     | '/_site/shop'
+    | '/_site/track'
     | '/_site/'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof SiteIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/track': {
+      id: '/_site/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof SiteTrackRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/shop': {
@@ -190,6 +209,7 @@ interface SiteRouteChildren {
   SiteContactRoute: typeof SiteContactRoute
   SiteServicesRoute: typeof SiteServicesRoute
   SiteShopRoute: typeof SiteShopRoute
+  SiteTrackRoute: typeof SiteTrackRoute
   SiteIndexRoute: typeof SiteIndexRoute
 }
 
@@ -199,6 +219,7 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteContactRoute: SiteContactRoute,
   SiteServicesRoute: SiteServicesRoute,
   SiteShopRoute: SiteShopRoute,
+  SiteTrackRoute: SiteTrackRoute,
   SiteIndexRoute: SiteIndexRoute,
 }
 
@@ -211,13 +232,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
