@@ -16,6 +16,7 @@ import { Route as SiteTrackRouteImport } from './routes/_site.track'
 import { Route as SiteShopRouteImport } from './routes/_site.shop'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
+import { Route as SiteCheckoutRouteImport } from './routes/_site.checkout'
 import { Route as SiteCartRouteImport } from './routes/_site.cart'
 import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
@@ -55,6 +56,11 @@ const SiteContactRoute = SiteContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteCheckoutRoute = SiteCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteCartRoute = SiteCartRouteImport.update({
   id: '/cart',
   path: '/cart',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof SiteAboutRoute
   '/blog': typeof SiteBlogRoute
   '/cart': typeof SiteCartRoute
+  '/checkout': typeof SiteCheckoutRoute
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/about': typeof SiteAboutRoute
   '/blog': typeof SiteBlogRoute
   '/cart': typeof SiteCartRoute
+  '/checkout': typeof SiteCheckoutRoute
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/_site/about': typeof SiteAboutRoute
   '/_site/blog': typeof SiteBlogRoute
   '/_site/cart': typeof SiteCartRoute
+  '/_site/checkout': typeof SiteCheckoutRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/shop': typeof SiteShopRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/services'
     | '/shop'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/services'
     | '/shop'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/_site/about'
     | '/_site/blog'
     | '/_site/cart'
+    | '/_site/checkout'
     | '/_site/contact'
     | '/_site/services'
     | '/_site/shop'
@@ -211,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteContactRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/checkout': {
+      id: '/_site/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof SiteCheckoutRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/cart': {
       id: '/_site/cart'
       path: '/cart'
@@ -246,6 +265,7 @@ interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
   SiteBlogRoute: typeof SiteBlogRoute
   SiteCartRoute: typeof SiteCartRoute
+  SiteCheckoutRoute: typeof SiteCheckoutRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteServicesRoute: typeof SiteServicesRoute
   SiteShopRoute: typeof SiteShopRoute
@@ -257,6 +277,7 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
   SiteBlogRoute: SiteBlogRoute,
   SiteCartRoute: SiteCartRoute,
+  SiteCheckoutRoute: SiteCheckoutRoute,
   SiteContactRoute: SiteContactRoute,
   SiteServicesRoute: SiteServicesRoute,
   SiteShopRoute: SiteShopRoute,
