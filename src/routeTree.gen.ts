@@ -16,6 +16,7 @@ import { Route as SiteTrackRouteImport } from './routes/_site.track'
 import { Route as SiteShopRouteImport } from './routes/_site.shop'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
+import { Route as SiteCartRouteImport } from './routes/_site.cart'
 import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as ApiPublicSslcommerzIpnRouteImport } from './routes/api/public/sslcommerz/ipn'
@@ -54,6 +55,11 @@ const SiteContactRoute = SiteContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteCartRoute = SiteCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteBlogRoute = SiteBlogRouteImport.update({
   id: '/blog',
   path: '/blog',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof SiteAboutRoute
   '/blog': typeof SiteBlogRoute
+  '/cart': typeof SiteCartRoute
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof SiteAboutRoute
   '/blog': typeof SiteBlogRoute
+  '/cart': typeof SiteCartRoute
   '/contact': typeof SiteContactRoute
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_site/about': typeof SiteAboutRoute
   '/_site/blog': typeof SiteBlogRoute
+  '/_site/cart': typeof SiteCartRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/shop': typeof SiteShopRoute
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/about'
     | '/blog'
+    | '/cart'
     | '/contact'
     | '/services'
     | '/shop'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/about'
     | '/blog'
+    | '/cart'
     | '/contact'
     | '/services'
     | '/shop'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_site/about'
     | '/_site/blog'
+    | '/_site/cart'
     | '/_site/contact'
     | '/_site/services'
     | '/_site/shop'
@@ -199,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteContactRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/cart': {
+      id: '/_site/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof SiteCartRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/blog': {
       id: '/_site/blog'
       path: '/blog'
@@ -226,6 +245,7 @@ declare module '@tanstack/react-router' {
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
   SiteBlogRoute: typeof SiteBlogRoute
+  SiteCartRoute: typeof SiteCartRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteServicesRoute: typeof SiteServicesRoute
   SiteShopRoute: typeof SiteShopRoute
@@ -236,6 +256,7 @@ interface SiteRouteChildren {
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
   SiteBlogRoute: SiteBlogRoute,
+  SiteCartRoute: SiteCartRoute,
   SiteContactRoute: SiteContactRoute,
   SiteServicesRoute: SiteServicesRoute,
   SiteShopRoute: SiteShopRoute,
