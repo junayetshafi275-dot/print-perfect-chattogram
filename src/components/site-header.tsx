@@ -1,7 +1,28 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Facebook, Instagram, Youtube } from "lucide-react";
+import { Menu, X, Facebook, Instagram, Youtube, ShoppingBag } from "lucide-react";
 import logo from "@/assets/friends-printers-logo.png";
+import { useCart } from "@/lib/cart";
+
+function CartButton({ onNavigate }: { onNavigate?: () => void }) {
+  const { count } = useCart();
+  return (
+    <Link
+      to="/cart"
+      onClick={onNavigate}
+      className="relative inline-flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-ink hover:border-primary hover:text-primary transition"
+      aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+    >
+      <ShoppingBag className="h-4 w-4" />
+      <span className="hidden xl:inline">Cart</span>
+      {count > 0 && (
+        <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+}
 
 const nav = [
   { to: "/", label: "Home" },
