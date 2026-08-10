@@ -45,7 +45,45 @@ export const Route = createFileRoute("/_site/contact")({
 });
 
 function ContactPage() {
+  const send = useServerFn(submitEnquiry);
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    service: "",
+    quantity: "",
+    deadline: "",
+    details: "",
+  });
+
+  const set = (key: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    const message = [
+      form.service && `Service: ${form.service}`,
+      form.quantity && `Quantity: ${form.quantity}`,
+      form.deadline && `Deadline: ${form.deadline}`,
+      form.details,
+    ]
+      .filter(Boolean)
+      .join("\n");
+    try {
+      await send({ data: { name: form.name, phone: form.phone, email: form.email, message } });
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "We couldn't send your enquiry. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <>
