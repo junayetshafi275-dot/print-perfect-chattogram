@@ -18,6 +18,7 @@ import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
 import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
+import { Route as ApiPublicSslcommerzIpnRouteImport } from './routes/api/public/sslcommerz/ipn'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -63,6 +64,11 @@ const SiteAboutRoute = SiteAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => SiteRoute,
 } as any)
+const ApiPublicSslcommerzIpnRoute = ApiPublicSslcommerzIpnRouteImport.update({
+  id: '/api/public/sslcommerz/ipn',
+  path: '/api/public/sslcommerz/ipn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
   '/track': typeof SiteTrackRoute
+  '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
 }
 export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/shop': typeof SiteShopRoute
   '/track': typeof SiteTrackRoute
   '/': typeof SiteIndexRoute
+  '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/_site/shop': typeof SiteShopRoute
   '/_site/track': typeof SiteTrackRoute
   '/_site/': typeof SiteIndexRoute
+  '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/shop'
     | '/track'
+    | '/api/public/sslcommerz/ipn'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sitemap.xml'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/track'
     | '/'
+    | '/api/public/sslcommerz/ipn'
   id:
     | '__root__'
     | '/_site'
@@ -128,11 +139,13 @@ export interface FileRouteTypes {
     | '/_site/shop'
     | '/_site/track'
     | '/_site/'
+    | '/api/public/sslcommerz/ipn'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   SiteRoute: typeof SiteRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicSslcommerzIpnRoute: typeof ApiPublicSslcommerzIpnRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteAboutRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/api/public/sslcommerz/ipn': {
+      id: '/api/public/sslcommerz/ipn'
+      path: '/api/public/sslcommerz/ipn'
+      fullPath: '/api/public/sslcommerz/ipn'
+      preLoaderRoute: typeof ApiPublicSslcommerzIpnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -228,17 +248,8 @@ const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   SiteRoute: SiteRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicSslcommerzIpnRoute: ApiPublicSslcommerzIpnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

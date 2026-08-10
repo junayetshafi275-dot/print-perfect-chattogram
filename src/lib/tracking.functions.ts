@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
+import { trackSchema, firstIssue } from "./validation";
 import type { OrderStatus } from "./order-status";
+import { z } from "zod";
 
 export type TrackedOrder = {
   orderNumber: string;
@@ -22,52 +24,80 @@ function normalizePhone(phone: string) {
 }
 
 /**
- * Public order lookup. Requires BOTH the order number and the phone number on
- * the order, and returns only tracking-safe fields (no address, email or totals).
+ * Public order lookup by order number, phone number, or both.
+ * Returns only tracking-safe fields (no address, email or totals) and is
+ * rate-limited to blunt order-number / phone enumeration.
  */
 export const trackOrder = createServerFn({ method: "POST" })
-  .inputValidator((input: { orderNumber: string; phone: string }) => {
-    const orderNumber = String(input?.orderNumber ?? "").trim().toUpperCase();
-    const phone = String(input?.phone ?? "").trim();
-    if (orderNumber.length < 3 || orderNumber.length > 32) throw new Error("Please enter a valid order number.");
-    if (normalizePhone(phone).length < 8) throw new Error("Please enter the phone number used on the order.");
-    return { orderNumber, phone };
+  .inputValidator((input: unknown) => {
+    const parsed = trackSchema.safeParse(input);
+    if (!parsed.success) throw new Error(firstIssue(parsed.error as z.ZodError));
+    return {
+      orderNumber: parsed.data.orderNumber?.toUpperCase() ?? "",
+      phone: parsed.data.phone ?? "",
+    };
   })
-  .handler(async ({ data }): Promise<{ order: TrackedOrder | null }> => {
+  .handler(async ({ data }): Promise<{ orders: TrackedOrder[] }> => {
+    const { callerIp, enforceRateLimit } = await import("./rate-limit.server");
+    await enforceRateLimit({
+      bucket: "track",
+      identifier: callerIp(),
+      limit: 20,
+      windowMinutes: 15,
+      message: "Too many lookups from this connection. Please wait a few minutes and try again.",
+    });
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: order, error } = await supabaseAdmin
+    let query = supabaseAdmin
       .from("orders")
       .select("id, order_number, customer_phone, shipping_address, status, payment_status, created_at, updated_at")
-      .eq("order_number", data.orderNumber)
-      .maybeSingle();
+      .order("created_at", { ascending: false })
+      .limit(10);
 
+    if (data.orderNumber) query = query.eq("order_number", data.orderNumber);
+
+    const { data: rows, error } = await query;
     if (error) throw new Error("We couldn't reach our order system. Please try again.");
-    if (!order) return { order: null };
-    if (normalizePhone(order.customer_phone) !== normalizePhone(data.phone)) return { order: null };
 
+    let matches = rows ?? [];
+
+    // A phone number, when supplied, must match — it's the shared secret for
+    // order-number lookups and the only key for phone-only lookups.
+    if (data.phone) {
+      const wanted = normalizePhone(data.phone);
+      matches = matches.filter((o) => normalizePhone(o.customer_phone) === wanted);
+    }
+
+    if (matches.length === 0) return { orders: [] };
+
+    const ids = matches.map((o) => o.id);
     const [{ data: history }, { data: items }] = await Promise.all([
       supabaseAdmin
         .from("order_status_history")
-        .select("status, note, created_at")
-        .eq("order_id", order.id)
+        .select("order_id, status, note, created_at")
+        .in("order_id", ids)
         .order("created_at", { ascending: true }),
       supabaseAdmin
         .from("order_items")
-        .select("product_name_snapshot, quantity")
-        .eq("order_id", order.id),
+        .select("order_id, product_name_snapshot, quantity")
+        .in("order_id", ids),
     ]);
 
     return {
-      order: {
+      orders: matches.map((order) => ({
         orderNumber: order.order_number,
         status: order.status,
         paymentStatus: order.payment_status,
         city: cityFromAddress(order.shipping_address),
         createdAt: order.created_at,
         updatedAt: order.updated_at,
-        timeline: (history ?? []).map((h) => ({ status: h.status, note: h.note, createdAt: h.created_at })),
-        items: (items ?? []).map((i) => ({ name: i.product_name_snapshot, quantity: i.quantity })),
-      },
+        timeline: (history ?? [])
+          .filter((h) => h.order_id === order.id)
+          .map((h) => ({ status: h.status, note: h.note, createdAt: h.created_at })),
+        items: (items ?? [])
+          .filter((i) => i.order_id === order.id)
+          .map((i) => ({ name: i.product_name_snapshot, quantity: i.quantity })),
+      })),
     };
   });
