@@ -229,6 +229,8 @@ function Field({
   required,
   placeholder,
   className = "",
+  value,
+  onChange,
 }: {
   label: string;
   name: string;
@@ -236,6 +238,8 @@ function Field({
   required?: boolean;
   placeholder?: string;
   className?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <div className={className}>
