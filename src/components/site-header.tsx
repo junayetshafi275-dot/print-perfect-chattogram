@@ -112,6 +112,7 @@ export function SiteHeader() {
                 </a>
               ))}
             </div>
+            <CartButton onNavigate={() => setOpen(false)} />
             <Link
               to="/contact"
               onClick={() => setOpen(false)}
