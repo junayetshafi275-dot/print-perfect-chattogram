@@ -107,13 +107,7 @@ function ContactPage() {
         </aside>
 
         <div className="lg:col-span-3">
-          <form
-            className="p-8 rounded-2xl border border-border bg-background shadow-soft"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
-          >
+          <form className="p-8 rounded-2xl border border-border bg-background shadow-soft" onSubmit={onSubmit}>
             {sent ? (
               <div className="py-16 text-center">
                 <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-accent text-primary">
@@ -132,43 +126,54 @@ function ContactPage() {
                 </p>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <Field label="Full name" name="name" required />
-                  <Field label="Phone" name="phone" type="tel" required />
-                  <Field label="Email" name="email" type="email" className="sm:col-span-2" required />
+                  <Field label="Full name" name="name" required value={form.name} onChange={set("name")} />
+                  <Field label="Phone" name="phone" type="tel" required placeholder="01712345678" value={form.phone} onChange={set("phone")} />
+                  <Field label="Email" name="email" type="email" className="sm:col-span-2" value={form.email} onChange={set("email")} />
 
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-ink mb-1.5">Service</label>
+                    <label htmlFor="service" className="block text-sm font-medium text-ink mb-1.5">Service</label>
                     <select
+                      id="service"
                       name="service"
+                      value={form.service}
+                      onChange={set("service")}
                       className="w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     >
-                      <option>Select a category</option>
+                      <option value="">Select a category</option>
                       {services.map((s) => (
-                        <option key={s.slug}>{s.title}</option>
+                        <option key={s.slug} value={s.title}>{s.title}</option>
                       ))}
-                      <option>Not sure — please advise</option>
+                      <option value="Not sure — please advise">Not sure — please advise</option>
                     </select>
                   </div>
 
-                  <Field label="Quantity" name="quantity" placeholder="e.g. 500 pcs" />
-                  <Field label="Preferred deadline" name="deadline" type="date" />
+                  <Field label="Quantity" name="quantity" placeholder="e.g. 500 pcs" value={form.quantity} onChange={set("quantity")} />
+                  <Field label="Preferred deadline" name="deadline" type="date" value={form.deadline} onChange={set("deadline")} />
 
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-ink mb-1.5">Project details</label>
+                    <label htmlFor="details" className="block text-sm font-medium text-ink mb-1.5">Project details</label>
                     <textarea
+                      id="details"
                       name="details"
                       rows={5}
+                      required
+                      maxLength={1800}
+                      value={form.details}
+                      onChange={set("details")}
                       placeholder="Size, paper, finishing, colours, or anything else we should know…"
                       className="w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     />
                   </div>
                 </div>
 
+                {error && <p className="mt-4 text-sm text-primary">{error}</p>}
+
                 <button
                   type="submit"
-                  className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-90 transition"
+                  disabled={loading}
+                  className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-90 transition disabled:opacity-60"
                 >
-                  Send Enquiry <Send className="h-4 w-4" />
+                  Send Enquiry {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 </button>
               </>
             )}
