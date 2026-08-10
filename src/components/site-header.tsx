@@ -73,6 +73,7 @@ export function SiteHeader() {
               </a>
             ))}
           </div>
+          <CartButton />
           <Link
             to="/contact"
             className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-90 transition"
