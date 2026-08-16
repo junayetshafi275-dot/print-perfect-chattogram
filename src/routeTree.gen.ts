@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SiteRouteImport } from './routes/_site'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteTrackRouteImport } from './routes/_site.track'
 import { Route as SiteShopRouteImport } from './routes/_site.shop'
@@ -20,6 +22,7 @@ import { Route as SiteCheckoutRouteImport } from './routes/_site.checkout'
 import { Route as SiteCartRouteImport } from './routes/_site.cart'
 import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicSslcommerzIpnRouteImport } from './routes/api/public/sslcommerz/ipn'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -27,8 +30,17 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SiteRoute = SiteRouteImport.update({
   id: '/_site',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SiteIndexRoute = SiteIndexRouteImport.update({
@@ -76,6 +88,11 @@ const SiteAboutRoute = SiteAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => SiteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicSslcommerzIpnRoute = ApiPublicSslcommerzIpnRouteImport.update({
   id: '/api/public/sslcommerz/ipn',
   path: '/api/public/sslcommerz/ipn',
@@ -84,7 +101,9 @@ const ApiPublicSslcommerzIpnRoute = ApiPublicSslcommerzIpnRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
+  '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/about': typeof SiteAboutRoute
   '/blog': typeof SiteBlogRoute
   '/cart': typeof SiteCartRoute
@@ -96,7 +115,10 @@ export interface FileRoutesByFullPath {
   '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof SiteIndexRoute
+  '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/about': typeof SiteAboutRoute
   '/blog': typeof SiteBlogRoute
   '/cart': typeof SiteCartRoute
@@ -105,13 +127,15 @@ export interface FileRoutesByTo {
   '/services': typeof SiteServicesRoute
   '/shop': typeof SiteShopRoute
   '/track': typeof SiteTrackRoute
-  '/': typeof SiteIndexRoute
   '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_site': typeof SiteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_site/about': typeof SiteAboutRoute
   '/_site/blog': typeof SiteBlogRoute
   '/_site/cart': typeof SiteCartRoute
@@ -127,7 +151,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/sitemap.xml'
+    | '/admin'
     | '/about'
     | '/blog'
     | '/cart'
@@ -139,7 +165,10 @@ export interface FileRouteTypes {
     | '/api/public/sslcommerz/ipn'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
+    | '/auth'
     | '/sitemap.xml'
+    | '/admin'
     | '/about'
     | '/blog'
     | '/cart'
@@ -148,12 +177,14 @@ export interface FileRouteTypes {
     | '/services'
     | '/shop'
     | '/track'
-    | '/'
     | '/api/public/sslcommerz/ipn'
   id:
     | '__root__'
+    | '/_authenticated'
     | '/_site'
+    | '/auth'
     | '/sitemap.xml'
+    | '/_authenticated/admin'
     | '/_site/about'
     | '/_site/blog'
     | '/_site/cart'
@@ -167,7 +198,9 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   SiteRoute: typeof SiteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicSslcommerzIpnRoute: typeof ApiPublicSslcommerzIpnRoute
 }
@@ -181,11 +214,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_site': {
       id: '/_site'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof SiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_site/': {
@@ -251,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteAboutRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/sslcommerz/ipn': {
       id: '/api/public/sslcommerz/ipn'
       path: '/api/public/sslcommerz/ipn'
@@ -260,6 +314,17 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
@@ -288,7 +353,9 @@ const SiteRouteChildren: SiteRouteChildren = {
 const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   SiteRoute: SiteRouteWithChildren,
+  AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicSslcommerzIpnRoute: ApiPublicSslcommerzIpnRoute,
 }
