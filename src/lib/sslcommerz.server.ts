@@ -65,6 +65,12 @@ export async function initSslcommerzSession(
     cus_city: "Chattogram",
     cus_country: "Bangladesh",
     shipping_method: "Courier",
+    // SSLCommerz rejects the session when shipping_method is set without ship_* fields.
+    ship_name: args.customerName,
+    ship_add1: args.address,
+    ship_city: "Chattogram",
+    ship_postcode: "4000",
+    ship_country: "Bangladesh",
     num_of_item: "1",
     product_name: `Friends Printers order ${args.orderNumber}`,
     product_category: "Printing",
