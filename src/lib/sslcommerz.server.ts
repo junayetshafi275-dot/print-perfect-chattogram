@@ -79,10 +79,12 @@ export async function initSslcommerzSession(
   });
 
   try {
+    // Hard timeout — the sandbox host stalls occasionally; never leave checkout hanging.
     const res = await fetch(cfg.sessionUrl, {
       method: "POST",
       headers: { "content-type": "application/x-www-form-urlencoded" },
       body,
+      signal: AbortSignal.timeout(20_000),
     });
     const json = (await res.json()) as { status?: string; GatewayPageURL?: string; failedreason?: string };
 
@@ -106,17 +108,22 @@ export async function validateSslcommerzTransaction(valId: string) {
     cfg.storeId!,
   )}&store_passwd=${encodeURIComponent(cfg.storePassword!)}&v=1&format=json`;
 
-  const res = await fetch(url);
-  if (!res.ok) {
-    console.error("[sslcommerz] validation http error", res.status);
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) {
+      console.error("[sslcommerz] validation http error", res.status);
+      return null;
+    }
+    return (await res.json()) as {
+      status?: string;
+      tran_id?: string;
+      amount?: string;
+      currency?: string;
+      bank_tran_id?: string;
+      value_a?: string;
+    };
+  } catch (error) {
+    console.error("[sslcommerz] validation error", error);
     return null;
   }
-  return (await res.json()) as {
-    status?: string;
-    tran_id?: string;
-    amount?: string;
-    currency?: string;
-    bank_tran_id?: string;
-    value_a?: string;
-  };
 }
