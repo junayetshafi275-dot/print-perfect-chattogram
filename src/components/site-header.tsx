@@ -27,6 +27,7 @@ function CartButton({ onNavigate }: { onNavigate?: () => void }) {
 const nav = [
   { to: "/", label: "Home" },
   { to: "/shop", label: "Shop" },
+  { to: "/services", label: "Services" },
   { to: "/track", label: "Track Order" },
   { to: "/about", label: "About" },
   { to: "/blog", label: "Blog" },
