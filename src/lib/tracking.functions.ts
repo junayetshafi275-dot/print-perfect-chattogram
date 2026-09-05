@@ -24,7 +24,8 @@ function normalizePhone(phone: string) {
 }
 
 /**
- * Public order lookup by order number, phone number, or both.
+ * Public order lookup. The order phone number is always required — it is the
+ * shared secret that stops sequential order numbers being enumerated.
  * Returns only tracking-safe fields (no address, email or totals) and is
  * rate-limited to blunt order-number / phone enumeration.
  */
@@ -34,7 +35,7 @@ export const trackOrder = createServerFn({ method: "POST" })
     if (!parsed.success) throw new Error(firstIssue(parsed.error as z.ZodError));
     return {
       orderNumber: parsed.data.orderNumber?.toUpperCase() ?? "",
-      phone: parsed.data.phone ?? "",
+      phone: parsed.data.phone,
     };
   })
   .handler(async ({ data }): Promise<{ orders: TrackedOrder[] }> => {
@@ -62,12 +63,9 @@ export const trackOrder = createServerFn({ method: "POST" })
 
     let matches = rows ?? [];
 
-    // A phone number, when supplied, must match — it's the shared secret for
-    // order-number lookups and the only key for phone-only lookups.
-    if (data.phone) {
-      const wanted = normalizePhone(data.phone);
-      matches = matches.filter((o) => normalizePhone(o.customer_phone) === wanted);
-    }
+    // The phone number must always match, order number or not.
+    const wanted = normalizePhone(data.phone);
+    matches = matches.filter((o) => normalizePhone(o.customer_phone) === wanted);
 
     if (matches.length === 0) return { orders: [] };
 
