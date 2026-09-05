@@ -103,6 +103,7 @@ function ContactPage() {
 
       <div className="container-x py-16 grid gap-12 lg:grid-cols-5">
         <aside className="lg:col-span-2 space-y-6">
+          // TODO: The phone (+880 1XXX-XXXXXX) and email (hello@friendsprinters.com) below are placeholders — replace with the real business phone number and email before this is considered final.
           {[
             {
               icon: MapPin,
