@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireStaff } from "./require-staff";
 import { z } from "zod";
 import { firstIssue } from "./validation";
 import type { OrderStatus } from "./order-status";
@@ -113,7 +114,7 @@ export const myAdminRole = createServerFn({ method: "GET" })
   });
 
 export const listAdminOrders = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .handler(async ({ context }): Promise<AdminOrder[]> => {
     const { data, error } = await context.supabase
       .from("orders")
@@ -153,7 +154,7 @@ export const listAdminOrders = createServerFn({ method: "GET" })
   });
 
 export const updateOrderStatus = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .inputValidator((input: unknown) =>
     parse(
       z.object({
@@ -182,7 +183,7 @@ export const updateOrderStatus = createServerFn({ method: "POST" })
   });
 
 export const updatePaymentStatus = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .inputValidator((input: unknown) =>
     parse(
       z.object({
@@ -202,7 +203,7 @@ export const updatePaymentStatus = createServerFn({ method: "POST" })
   });
 
 export const listAdminProducts = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .handler(async ({ context }): Promise<AdminProduct[]> => {
     const { data, error } = await context.supabase
       .from("products")
@@ -223,7 +224,7 @@ export const listAdminProducts = createServerFn({ method: "GET" })
   });
 
 export const saveProduct = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .inputValidator((input: unknown) => parse(productSchema, input))
   .handler(async ({ data, context }) => {
     const row = {
@@ -248,7 +249,7 @@ export const saveProduct = createServerFn({ method: "POST" })
   });
 
 export const deleteProduct = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .inputValidator((input: unknown) => parse(z.object({ id: z.string().uuid() }), input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("products").delete().eq("id", data.id);
@@ -257,7 +258,7 @@ export const deleteProduct = createServerFn({ method: "POST" })
   });
 
 export const listSubmissions = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .handler(async ({ context }): Promise<AdminSubmission[]> => {
     const { data, error } = await context.supabase
       .from("contact_submissions")
@@ -277,7 +278,7 @@ export const listSubmissions = createServerFn({ method: "GET" })
   });
 
 export const updateSubmissionStatus = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .inputValidator((input: unknown) =>
     parse(z.object({ id: z.string().uuid(), status: z.enum(["new", "read", "responded"]) }), input),
   )
@@ -291,7 +292,7 @@ export const updateSubmissionStatus = createServerFn({ method: "POST" })
   });
 
 export const listAdminTestimonials = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .handler(async ({ context }): Promise<AdminTestimonial[]> => {
     const { data, error } = await context.supabase
       .from("testimonials")
@@ -310,7 +311,7 @@ export const listAdminTestimonials = createServerFn({ method: "GET" })
   });
 
 export const saveTestimonial = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .inputValidator((input: unknown) => parse(testimonialSchema, input))
   .handler(async ({ data, context }) => {
     const row = {
@@ -329,7 +330,7 @@ export const saveTestimonial = createServerFn({ method: "POST" })
   });
 
 export const deleteTestimonial = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireStaff])
   .inputValidator((input: unknown) => parse(z.object({ id: z.string().uuid() }), input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("testimonials").delete().eq("id", data.id);
