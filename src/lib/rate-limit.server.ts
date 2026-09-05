@@ -1,11 +1,18 @@
 import { getRequestIP, getRequestHeader } from "@tanstack/react-start/server";
 
-/** Best-effort caller identity for rate limiting. */
+/**
+ * Best-effort caller identity for rate limiting.
+ *
+ * Prefer platform-set headers (cf-connecting-ip) over client-suppliable
+ * x-forwarded-for: a client can send a fresh fake XFF on every request and
+ * get a new rate-limit bucket each time, so XFF is only a last-resort
+ * fallback.
+ */
 export function callerIp() {
   const ip =
-    getRequestIP({ xForwardedFor: true }) ??
     getRequestHeader("cf-connecting-ip") ??
     getRequestHeader("x-real-ip") ??
+    getRequestIP({ xForwardedFor: true }) ??
     "unknown";
   return String(ip).slice(0, 64);
 }
