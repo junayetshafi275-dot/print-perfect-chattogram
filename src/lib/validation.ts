@@ -41,14 +41,18 @@ export const checkoutSchema = z.object({
     .max(50),
 });
 
-export const trackSchema = z
-  .object({
-    orderNumber: z.string().trim().max(32).optional(),
-    phone: z.string().trim().max(24).optional(),
-  })
-  .refine((v) => (v.orderNumber && v.orderNumber.length >= 3) || (v.phone && v.phone.length >= 8), {
-    message: "Enter an order number or the phone number used on the order.",
-  });
+// The phone number on the order is the shared secret for tracking. Order
+// numbers are sequential, so an order-number-only lookup would let anyone walk
+// the counter and read every order — phone is therefore always required.
+export const trackSchema = z.object({
+  orderNumber: z.string().trim().max(32).optional(),
+  phone: z
+    .string()
+    .trim()
+    .min(8, "Enter the phone number used on the order.")
+    .max(24),
+});
+
 
 export function firstIssue(error: z.ZodError) {
   return error.issues[0]?.message ?? "Please check the details and try again.";
