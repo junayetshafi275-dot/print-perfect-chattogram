@@ -9,14 +9,26 @@ export const submitEnquiry = createServerFn({ method: "POST" })
     return parsed.data;
   })
   .handler(async ({ data }): Promise<{ ok: true }> => {
-    const { callerIp, enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit({
-      bucket: "contact",
-      identifier: callerIp(),
-      limit: 5,
-      windowMinutes: 60,
-      message: "You've sent several enquiries recently. Please try again in an hour, or call the press room.",
+    const { log } = await import("./logging.server");
+    const { callerIp, enforceIpAndPhoneLimit, RATE_LIMITS } = await import("./rate-limit.server");
+
+    // Honeypot: bots fill every field, humans never see this one. Answer with a
+    // success shape so the bot gets no signal, but store nothing.
+    if (data.company_website && data.company_website.trim() !== "") {
+      log.warn("contact", "honeypot triggered — enquiry discarded");
+      return { ok: true };
+    }
+
+    await enforceIpAndPhoneLimit({
+      ip: RATE_LIMITS.contactIp,
+      phone: RATE_LIMITS.contactPhone,
+      phoneValue: data.phone,
+      message:
+        "You've sent several enquiries recently. Please try again in an hour, or call the press room.",
     });
+
+    const { verifyCaptcha } = await import("./turnstile.server");
+    await verifyCaptcha(data.captchaToken, callerIp());
 
     const { createPublicClient } = await import("./supabase-public.server");
     const supabase = createPublicClient();
@@ -29,9 +41,10 @@ export const submitEnquiry = createServerFn({ method: "POST" })
     });
 
     if (error) {
-      console.error("[contact] insert failed", error);
+      log.error("contact", "enquiry insert failed", { error });
       throw new Error("We couldn't save your enquiry. Please try again, or call us directly.");
     }
 
+    log.info("contact", "enquiry stored");
     return { ok: true };
   });

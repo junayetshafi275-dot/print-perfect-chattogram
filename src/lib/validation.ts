@@ -8,11 +8,40 @@ export const bdPhone = z
     message: "Enter a valid Bangladeshi mobile number, e.g. 01712345678.",
   });
 
+/**
+ * Product image locations are rendered straight into `src` attributes, so only
+ * two shapes are safe:
+ *  - a same-origin relative path (`/assets/x.jpg`)
+ *  - an absolute https:// URL
+ * Everything else (javascript:, data:, file:, ftp:, protocol-relative `//host`,
+ * backslash tricks) is rejected.
+ */
+export const imageUrlSchema = z
+  .string()
+  .trim()
+  .max(300)
+  .refine((value) => {
+    if (value.includes("\\") || /[\u0000-\u001f]/.test(value)) return false;
+    if (value.startsWith("//")) return false; // protocol-relative
+    if (value.startsWith("/")) return true; // same-origin relative path
+    let url: URL;
+    try {
+      url = new URL(value);
+    } catch {
+      return false;
+    }
+    return url.protocol === "https:";
+  }, "Use a relative path like /assets/photo.jpg or a full https:// address.");
+
 export const enquirySchema = z.object({
   name: z.string().trim().min(2, "Please enter your full name.").max(100),
   phone: bdPhone,
   email: z.union([z.string().trim().email("Enter a valid email address.").max(255), z.literal("")]).optional(),
   message: z.string().trim().min(10, "Tell us a little more about your project.").max(2000),
+  /** Hidden honeypot — real people never fill this in. */
+  company_website: z.string().max(200).optional(),
+  /** Cloudflare Turnstile token, when the widget is configured. */
+  captchaToken: z.string().max(4000).optional(),
 });
 
 export const paymentMethods = [
@@ -33,7 +62,12 @@ export const checkoutSchema = z.object({
   items: z
     .array(
       z.object({
-        slug: z.string().trim().min(1).max(80),
+        slug: z
+          .string()
+          .trim()
+          .min(1)
+          .max(80)
+          .regex(/^[a-z0-9-]+$/, "That product reference isn't valid."),
         quantity: z.number().int().min(1).max(999),
       }),
     )
@@ -45,7 +79,12 @@ export const checkoutSchema = z.object({
 // numbers are sequential, so an order-number-only lookup would let anyone walk
 // the counter and read every order — phone is therefore always required.
 export const trackSchema = z.object({
-  orderNumber: z.string().trim().max(32).optional(),
+  orderNumber: z
+    .string()
+    .trim()
+    .max(32)
+    .regex(/^[A-Za-z0-9-]*$/, "Order numbers look like FP-2847.")
+    .optional(),
   phone: z
     .string()
     .trim()
