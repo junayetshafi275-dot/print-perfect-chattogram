@@ -19,15 +19,15 @@ function cityFromAddress(address: string): string | null {
   return parts.length > 1 ? (parts[parts.length - 1] ?? null) : null;
 }
 
-function normalizePhone(phone: string) {
-  return phone.replace(/[^0-9]/g, "").slice(-11);
-}
-
 /**
  * Public order lookup. The order phone number is always required — it is the
  * shared secret that stops sequential order numbers being enumerated.
- * Returns only tracking-safe fields (no address, email or totals) and is
- * rate-limited to blunt order-number / phone enumeration.
+ *
+ * The phone filter is applied in SQL against the stored normalized phone
+ * column (indexed), so the query only ever touches this customer's rows: no
+ * unrelated customer data is loaded into the server at all. Returns only
+ * tracking-safe fields (no address, email or totals) and is rate-limited on
+ * both connection and phone number to blunt enumeration.
  */
 export const trackOrder = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => {
@@ -39,34 +39,41 @@ export const trackOrder = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }): Promise<{ orders: TrackedOrder[] }> => {
-    const { callerIp, enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit({
-      bucket: "track",
-      identifier: callerIp(),
-      limit: 20,
-      windowMinutes: 15,
+    const { log } = await import("./logging.server");
+    const { enforceIpAndPhoneLimit, normalizePhone, RATE_LIMITS } = await import(
+      "./rate-limit.server"
+    );
+
+    await enforceIpAndPhoneLimit({
+      ip: RATE_LIMITS.trackIp,
+      phone: RATE_LIMITS.trackPhone,
+      phoneValue: data.phone,
       message: "Too many lookups from this connection. Please wait a few minutes and try again.",
     });
+
+    const phone = normalizePhone(data.phone);
+    if (phone.length < 6) return { orders: [] };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     let query = supabaseAdmin
       .from("orders")
-      .select("id, order_number, customer_phone, shipping_address, status, payment_status, created_at, updated_at")
+      .select(
+        "id, order_number, shipping_address, status, payment_status, created_at, updated_at",
+      )
+      .eq("customer_phone_normalized", phone)
       .order("created_at", { ascending: false })
       .limit(10);
 
     if (data.orderNumber) query = query.eq("order_number", data.orderNumber);
 
     const { data: rows, error } = await query;
-    if (error) throw new Error("We couldn't reach our order system. Please try again.");
+    if (error) {
+      log.error("track", "order lookup failed", { error });
+      throw new Error("We couldn't reach our order system. Please try again.");
+    }
 
-    let matches = rows ?? [];
-
-    // The phone number must always match, order number or not.
-    const wanted = normalizePhone(data.phone);
-    matches = matches.filter((o) => normalizePhone(o.customer_phone) === wanted);
-
+    const matches = rows ?? [];
     if (matches.length === 0) return { orders: [] };
 
     const ids = matches.map((o) => o.id);
