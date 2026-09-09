@@ -130,6 +130,7 @@ export type Database = {
           customer_email: string | null
           customer_name: string
           customer_phone: string
+          customer_phone_normalized: string | null
           id: string
           order_number: string
           payment_method: Database["public"]["Enums"]["payment_method"]
@@ -145,6 +146,7 @@ export type Database = {
           customer_email?: string | null
           customer_name: string
           customer_phone: string
+          customer_phone_normalized?: string | null
           id?: string
           order_number?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
@@ -160,6 +162,7 @@ export type Database = {
           customer_email?: string | null
           customer_name?: string
           customer_phone?: string
+          customer_phone_normalized?: string | null
           id?: string
           order_number?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
@@ -291,6 +294,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      consume_rate_limit: {
+        Args: {
+          _bucket: string
+          _identifier: string
+          _limit: number
+          _window_minutes: number
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
