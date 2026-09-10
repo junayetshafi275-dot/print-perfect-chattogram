@@ -24,10 +24,10 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -38,23 +38,17 @@ function AuthPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
+    setNotice(null);
     try {
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        navigate({ to: "/admin" });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/auth` },
-        });
-        if (error) throw error;
-        toast.success("Account created. An admin needs to grant you staff access.");
-        setMode("signin");
-      }
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Sign in failed.");
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      navigate({ to: "/admin" });
+    } catch {
+      // Deliberately generic: a message that distinguished "no such account"
+      // from "wrong password" would let anyone test which staff emails exist.
+      const message = "Those sign-in details don't match an active staff account.";
+      setNotice(message);
+      toast.error(message);
     } finally {
       setBusy(false);
     }
@@ -68,7 +62,7 @@ function AuthPage() {
         </Link>
         <h1 className="mt-4 text-2xl font-semibold tracking-tight">Press-room access</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {mode === "signin" ? "Sign in to manage orders and the catalogue." : "Create your staff account."}
+          Sign in to manage orders and the catalogue.
         </p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div className="space-y-2">
@@ -87,24 +81,21 @@ function AuthPage() {
             <Input
               id="password"
               type="password"
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              autoComplete="current-password"
               required
-              minLength={8}
+              minLength={12}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <Button type="submit" className="w-full" disabled={busy}>
-            {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
+            {busy ? "Please wait…" : "Sign in"}
           </Button>
         </form>
-        <button
-          type="button"
-          className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground"
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-        >
-          {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-        </button>
+        {notice && <p className="mt-4 text-sm text-destructive">{notice}</p>}
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          Accounts are created by an administrator only. Ask the press-room admin to invite you.
+        </p>
       </div>
       <Toaster />
     </div>
