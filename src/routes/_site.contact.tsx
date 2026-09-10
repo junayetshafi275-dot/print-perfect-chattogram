@@ -57,6 +57,8 @@ function ContactPage() {
     quantity: "",
     deadline: "",
     details: "",
+    // Honeypot: hidden from real users, bots tend to fill it in.
+    company_website: "",
   });
 
   const set = (key: keyof typeof form) => (
@@ -76,7 +78,15 @@ function ContactPage() {
       .filter(Boolean)
       .join("\n");
     try {
-      await send({ data: { name: form.name, phone: form.phone, email: form.email, message } });
+      await send({
+        data: {
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          message,
+          company_website: form.company_website,
+        },
+      });
       setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "We couldn't send your enquiry. Please try again.");
@@ -103,7 +113,6 @@ function ContactPage() {
 
       <div className="container-x py-16 grid gap-12 lg:grid-cols-5">
         <aside className="lg:col-span-2 space-y-6">
-          // TODO: The phone (+880 1XXX-XXXXXX) and email (hello@friendsprinters.com) below are placeholders — replace with the real business phone number and email before this is considered final.
           {[
             {
               icon: MapPin,
@@ -165,6 +174,18 @@ function ContactPage() {
                 </p>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  <div aria-hidden="true" className="hidden">
+                    <label htmlFor="company_website">Company website</label>
+                    <input
+                      id="company_website"
+                      name="company_website"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={form.company_website}
+                      onChange={set("company_website")}
+                    />
+                  </div>
                   <Field label="Full name" name="name" required value={form.name} onChange={set("name")} />
                   <Field label="Phone" name="phone" type="tel" required placeholder="01712345678" value={form.phone} onChange={set("phone")} />
                   <Field label="Email" name="email" type="email" className="sm:col-span-2" value={form.email} onChange={set("email")} />

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/public/sslcommerz/ipn")({
           return new Response("Validation unavailable", { status: 503 });
         }
         if (validated.tran_id !== tranId) {
-          console.error("[ipn] tran_id mismatch", tranId, validated.tran_id);
+          log.error("ipn", "tran_id mismatch");
           return new Response("Transaction mismatch", { status: 400 });
         }
 
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/api/public/sslcommerz/ipn")({
           .maybeSingle();
 
         if (error || !order) {
-          console.error("[ipn] unknown order", tranId, error);
+          log.error("ipn", "unknown order", { error });
           return new Response("Unknown order", { status: 404 });
         }
 
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/api/public/sslcommerz/ipn")({
           (validated.currency ?? "BDT") === "BDT";
 
         if (paid && !amountMatches) {
-          console.error("[ipn] amount mismatch", validated.amount, order.total_amount);
+          log.error("ipn", "amount mismatch");
           return new Response("Amount mismatch", { status: 400 });
         }
 
@@ -72,7 +72,7 @@ export const Route = createFileRoute("/api/public/sslcommerz/ipn")({
           .in("payment_status", ["pending", "failed"]);
 
         if (updateError) {
-          console.error("[ipn] order update failed", updateError);
+          log.error("ipn", "order update failed", { error: updateError });
           return new Response("Update failed", { status: 500 });
         }
 
