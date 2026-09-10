@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requireStaff } from "./require-staff";
 import { z } from "zod";
-import { log } from "./logging.server";
 import { firstIssue, imageUrlSchema } from "./validation";
 import type { OrderStatus } from "./order-status";
 
@@ -127,6 +126,7 @@ export const listAdminOrders = createServerFn({ method: "GET" })
       .limit(200);
 
     if (error) {
+      const { log } = await import("./logging.server");
       log.error("admin", "orders list failed", { error });
       throw new Error("Could not load orders.");
     }
@@ -173,6 +173,7 @@ export const updateOrderStatus = createServerFn({ method: "POST" })
       .update({ status: data.status })
       .eq("id", data.id);
     if (error) {
+      const { log } = await import("./logging.server");
       log.error("admin", "order status update failed", { error });
       throw new Error("Could not update this order.");
     }
@@ -244,6 +245,7 @@ export const saveProduct = createServerFn({ method: "POST" })
       : context.supabase.from("products").insert(row);
     const { error } = await query;
     if (error) {
+      const { log } = await import("./logging.server");
       log.error("admin", "product save failed", { error });
       throw new Error(error.message.includes("duplicate") ? "That slug is already used." : "Could not save the product.");
     }
