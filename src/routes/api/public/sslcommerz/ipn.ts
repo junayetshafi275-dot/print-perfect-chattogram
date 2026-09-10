@@ -18,6 +18,8 @@ export const Route = createFileRoute("/api/public/sslcommerz/ipn")({
           return new Response("Missing val_id or tran_id", { status: 400 });
         }
 
+        // Server-only modules are loaded inside the handler so they never reach the client bundle.
+        const { log } = await import("@/lib/logging.server");
         const { validateSslcommerzTransaction } = await import("@/lib/sslcommerz.server");
         const validated = await validateSslcommerzTransaction(valId);
 
