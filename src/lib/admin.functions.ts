@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requireStaff } from "./require-staff";
 import { z } from "zod";
-import { firstIssue } from "./validation";
+import { firstIssue, imageUrlSchema } from "./validation";
 import type { OrderStatus } from "./order-status";
 
 export type AdminRole = "admin" | "staff" | null;
@@ -79,7 +79,8 @@ const productSchema = z.object({
   category: z.string().trim().min(2).max(60),
   price: z.number().min(0).max(10_000_000),
   salePrice: z.number().min(0).max(10_000_000).nullable(),
-  imageUrl: z.string().trim().max(200).nullable(),
+  // Only same-origin relative paths or https:// URLs — blocks javascript:, data:, file:, ftp:.
+  imageUrl: imageUrlSchema.nullable(),
   description: z.string().trim().max(500).nullable(),
   isQuoteOnly: z.boolean(),
 });
@@ -125,7 +126,8 @@ export const listAdminOrders = createServerFn({ method: "GET" })
       .limit(200);
 
     if (error) {
-      console.error("[admin] orders list failed", error);
+      const { log } = await import("./logging.server");
+      log.error("admin", "orders list failed", { error });
       throw new Error("Could not load orders.");
     }
 
@@ -171,7 +173,8 @@ export const updateOrderStatus = createServerFn({ method: "POST" })
       .update({ status: data.status })
       .eq("id", data.id);
     if (error) {
-      console.error("[admin] order status update failed", error);
+      const { log } = await import("./logging.server");
+      log.error("admin", "order status update failed", { error });
       throw new Error("Could not update this order.");
     }
     if (data.note) {
@@ -242,7 +245,8 @@ export const saveProduct = createServerFn({ method: "POST" })
       : context.supabase.from("products").insert(row);
     const { error } = await query;
     if (error) {
-      console.error("[admin] product save failed", error);
+      const { log } = await import("./logging.server");
+      log.error("admin", "product save failed", { error });
       throw new Error(error.message.includes("duplicate") ? "That slug is already used." : "Could not save the product.");
     }
     return { ok: true };

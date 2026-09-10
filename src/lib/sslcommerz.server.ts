@@ -1,3 +1,4 @@
+import { log } from "./logging.server";
 import { getRequestUrl } from "@tanstack/react-start/server";
 
 type InitArgs = {
@@ -89,12 +90,12 @@ export async function initSslcommerzSession(
     const json = (await res.json()) as { status?: string; GatewayPageURL?: string; failedreason?: string };
 
     if (json.status !== "SUCCESS" || !json.GatewayPageURL) {
-      console.error("[sslcommerz] session init failed", json.status, json.failedreason);
+      log.error("sslcommerz", "session init failed", { status: json.status, reason: json.failedreason });
       return { url: null, note: "The payment gateway is unavailable — we'll contact you with payment details." };
     }
     return { url: json.GatewayPageURL, note: null };
   } catch (error) {
-    console.error("[sslcommerz] session init error", error);
+    log.error("sslcommerz", "session init error", { error });
     return { url: null, note: "The payment gateway is unavailable — we'll contact you with payment details." };
   }
 }
@@ -111,7 +112,7 @@ export async function validateSslcommerzTransaction(valId: string) {
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
     if (!res.ok) {
-      console.error("[sslcommerz] validation http error", res.status);
+      log.error("sslcommerz", "validation http error", { status: res.status });
       return null;
     }
     return (await res.json()) as {
@@ -123,7 +124,7 @@ export async function validateSslcommerzTransaction(valId: string) {
       value_a?: string;
     };
   } catch (error) {
-    console.error("[sslcommerz] validation error", error);
+    log.error("sslcommerz", "validation error", { error });
     return null;
   }
 }

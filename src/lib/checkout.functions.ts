@@ -17,13 +17,13 @@ export const placeOrder = createServerFn({ method: "POST" })
     return parsed.data;
   })
   .handler(async ({ data }): Promise<PlacedOrder> => {
-    const { callerIp, enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit({
-      bucket: "checkout",
-      identifier: callerIp(),
-      limit: 10,
-      windowMinutes: 60,
-      message: "Too many order attempts from this connection. Please try again later or call us.",
+    const { log } = await import("./logging.server");
+    const { enforceIpAndPhoneLimit, RATE_LIMITS } = await import("./rate-limit.server");
+    await enforceIpAndPhoneLimit({
+      ip: RATE_LIMITS.checkoutIp,
+      phone: RATE_LIMITS.checkoutPhone,
+      phoneValue: data.phone,
+      message: "Too many order attempts. Please try again later or call us.",
     });
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -36,7 +36,7 @@ export const placeOrder = createServerFn({ method: "POST" })
       .in("slug", slugs);
 
     if (productError) {
-      console.error("[checkout] product lookup failed", productError);
+      log.error("checkout", "product lookup failed", { error: productError });
       throw new Error("We couldn't price your order. Please try again.");
     }
 
@@ -73,7 +73,7 @@ export const placeOrder = createServerFn({ method: "POST" })
       .single();
 
     if (orderError || !order) {
-      console.error("[checkout] order insert failed", orderError);
+      log.error("checkout", "order insert failed", { error: orderError });
       throw new Error("We couldn't place your order. Please try again.");
     }
 
@@ -82,7 +82,7 @@ export const placeOrder = createServerFn({ method: "POST" })
       .insert(lines.map((l) => ({ ...l, order_id: order.id })));
 
     if (itemError) {
-      console.error("[checkout] order items insert failed", itemError);
+      log.error("checkout", "order items insert failed", { error: itemError });
       throw new Error("Your order was created but the items didn't save. Please call us to confirm.");
     }
 
