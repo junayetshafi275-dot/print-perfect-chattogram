@@ -79,7 +79,8 @@ const productSchema = z.object({
   category: z.string().trim().min(2).max(60),
   price: z.number().min(0).max(10_000_000),
   salePrice: z.number().min(0).max(10_000_000).nullable(),
-  imageUrl: z.string().trim().max(200).nullable(),
+  // Only same-origin relative paths or https:// URLs — blocks javascript:, data:, file:, ftp:.
+  imageUrl: imageUrlSchema.nullable(),
   description: z.string().trim().max(500).nullable(),
   isQuoteOnly: z.boolean(),
 });
