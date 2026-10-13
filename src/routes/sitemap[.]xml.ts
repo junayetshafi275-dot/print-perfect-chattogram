@@ -12,7 +12,8 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const baseUrl = getRequestUrl().origin;
+        const configuredBaseUrl = process.env["SITE_URL"]?.trim();
+        const baseUrl = (configuredBaseUrl || getRequestUrl().origin).replace(/\/+$/, "");
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/shop", changefreq: "weekly", priority: "0.9" },
