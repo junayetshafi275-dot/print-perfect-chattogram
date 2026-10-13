@@ -17,7 +17,16 @@ export const PRODUCT_IMAGES: Record<string, string> = {
 };
 
 export function productImage(key: string | null | undefined) {
-  return (key && PRODUCT_IMAGES[key]) || commercial;
+  if (!key) return commercial;
+  if (PRODUCT_IMAGES[key]) return PRODUCT_IMAGES[key];
+  if (key.startsWith("/") && !key.startsWith("//") && !key.includes("\\")) return key;
+  try {
+    const url = new URL(key);
+    if (url.protocol === "https:") return url.href;
+  } catch {
+    // Unknown image keys should safely fall back to the bundled default.
+  }
+  return commercial;
 }
 
 export const CATEGORY_META: Record<string, { title: string; eyebrow: string; icon: LucideIcon }> = {
