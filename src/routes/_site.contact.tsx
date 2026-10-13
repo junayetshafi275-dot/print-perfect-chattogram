@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Mail, MapPin, Phone, Send, Clock, Loader2 } from "lucide-react";
 import { services } from "@/lib/services-data";
 import { submitEnquiry } from "@/lib/contact.functions";
+import { BUSINESS_CONTACT, CONTACT_COMING_SOON } from "@/lib/business-contact";
 
 export const Route = createFileRoute("/_site/contact")({
   head: () => ({
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/_site/contact")({
       {
         name: "description",
         content:
-          "Request a quote or get in touch with Friends Printers in Anderkilla, Chattogram. Fast responses on business, marketing and custom print jobs.",
+          "Request a quote or get in touch with Friends Printers in Anderkilla, Chattogram. Send details of your business, marketing or custom print job.",
       },
       { property: "og:title", content: "Contact Friends Printers — Get a Print Quote" },
       {
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/_site/contact")({
             addressLocality: "Chattogram",
             addressCountry: "BD",
           },
-          url: "/contact",
+          url: "https://print-craft-chattogram.lovable.app/contact",
         }),
       },
     ],
@@ -165,7 +166,7 @@ function ContactPage() {
                 </div>
                 <h3 className="mt-6 font-display text-2xl text-ink">Thanks — message received</h3>
                 <p className="mt-2 text-ink-soft max-w-sm mx-auto">
-                  Your enquiry just landed on the press-room desk. A real human from Anderkilla will reply within one business day — usually much sooner.
+                  Your enquiry has been saved for our team. We'll get back to you using the phone number or email you provided.
                 </p>
               </div>
             ) : (
