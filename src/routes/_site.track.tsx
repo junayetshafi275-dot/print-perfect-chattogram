@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Loader2, PackageSearch, Search } from "lucide-react";
 import { trackOrder, type TrackedOrder } from "@/lib/tracking.functions";
@@ -29,6 +29,11 @@ function formatDate(iso: string) {
 function TrackPage() {
   const lookup = useServerFn(trackOrder);
   const [orderNumber, setOrderNumber] = useState("");
+
+  useEffect(() => {
+    const order = new URLSearchParams(window.location.search).get("order");
+    if (order && /^[A-Za-z0-9-]{3,32}$/.test(order)) setOrderNumber(order);
+  }, []);
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

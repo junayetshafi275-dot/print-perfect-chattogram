@@ -368,7 +368,7 @@ function ProductsTab() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Image key (commercial, office, marketing, education, event, custom)</Label>
+              <Label>Image key (commercial, office, marketing, education, event, custom) or HTTPS image URL</Label>
               <Input
                 value={draft.imageUrl ?? ""}
                 onChange={(e) => setDraft({ ...draft, imageUrl: e.target.value || null })}

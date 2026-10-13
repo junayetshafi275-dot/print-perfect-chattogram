@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart";
@@ -38,6 +38,17 @@ function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [placed, setPlaced] = useState<PlacedOrder | null>(null);
+  const [paymentReturn, setPaymentReturn] = useState<{ status: "processing" | "failed" | "cancelled"; order: string | null } | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("payment");
+    if (status === "processing" || status === "failed" || status === "cancelled") {
+      const order = params.get("order");
+      setPaymentReturn({ status, order: order && /^[A-Za-z0-9-]{3,32}$/.test(order) ? order : null });
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -65,17 +76,45 @@ function CheckoutPage() {
           items: lines.map((l) => ({ slug: l.slug, quantity: l.quantity })),
         },
       });
-      clear();
       if (result.gatewayUrl) {
         window.location.href = result.gatewayUrl;
         return;
       }
+      clear();
       setPlaced(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : "We couldn't place your order. Please try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (paymentReturn) {
+    const isProcessing = paymentReturn.status === "processing";
+    const isCancelled = paymentReturn.status === "cancelled";
+    return (
+      <section className="container-x py-20 max-w-xl text-center">
+        <CheckCircle2 className="mx-auto h-12 w-12 text-primary" />
+        <h1 className="mt-4 font-display text-3xl text-ink">
+          {isProcessing ? "Payment submitted" : isCancelled ? "Payment cancelled" : "Payment was not completed"}
+        </h1>
+        <p className="mt-3 text-ink-soft">
+          {isProcessing
+            ? "Your order is awaiting server-side payment confirmation. Do not submit another payment while this is being checked."
+            : isCancelled
+              ? "The payment process was cancelled. Your cart has been kept so you can try again when ready."
+              : "The payment did not complete. Your cart has been kept so you can retry or choose another payment method."}
+        </p>
+        {paymentReturn.order && <p className="mt-3 text-sm text-ink-soft">Order number: <strong className="text-ink">{paymentReturn.order}</strong></p>}
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {paymentReturn.order && <a href={`/track?order=${encodeURIComponent(paymentReturn.order)}`} className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">Track order</a>}
+          {!isProcessing && <button type="button" onClick={() => { setPaymentReturn(null); window.history.replaceState({}, "", window.location.pathname); }} className="rounded-md border border-border px-5 py-2.5 text-sm font-medium text-ink">
+            Try checkout again
+          </button>}
+          <Link to="/cart" className="rounded-md border border-border px-5 py-2.5 text-sm font-medium text-ink">View cart</Link>
+        </div>
+      </section>
+    );
   }
 
   if (placed) {

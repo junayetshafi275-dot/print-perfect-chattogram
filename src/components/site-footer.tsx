@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Youtube } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -13,11 +12,6 @@ export function SiteFooter() {
           <p className="mt-4 text-sm text-white/70 leading-relaxed">
             Trusted printing partner in Anderkilla, Chattogram — quality craftsmanship, honest pricing, and dependable delivery for every job.
           </p>
-          <div className="mt-5 flex items-center gap-4 text-white/70">
-            <a href="https://facebook.com" aria-label="Facebook" className="hover:text-primary"><Facebook className="h-4 w-4" /></a>
-            <a href="https://instagram.com" aria-label="Instagram" className="hover:text-primary"><Instagram className="h-4 w-4" /></a>
-            <a href="https://youtube.com" aria-label="YouTube" className="hover:text-primary"><Youtube className="h-4 w-4" /></a>
-          </div>
         </div>
 
         <div>
@@ -37,7 +31,6 @@ export function SiteFooter() {
             <li><Link to="/blog" className="hover:text-primary">Blog</Link></li>
             <li><Link to="/track" className="hover:text-primary">Track Order</Link></li>
             <li><Link to="/auth" className="hover:text-primary">Staff Login</Link></li>
-
           </ul>
         </div>
       </div>

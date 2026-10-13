@@ -4,8 +4,11 @@ import { buildCsp, securityHeaders, shouldSetFrameOptions } from "../src/lib/sec
 import { normalizeIp, normalizePhone } from "../src/lib/rate-limit.server";
 import { __redactForTest, maskIdentifier } from "../src/lib/logging.server";
 
-describe("product image URL validation", () => {
-  it("accepts relative paths and https URLs", () => {
+describe("product image validation", () => {
+  it("accepts built-in image keys, relative paths and https URLs", () => {
+    for (const key of ["commercial", "office", "marketing", "education", "event", "custom"]) {
+      expect(imageUrlSchema.safeParse(key).success, key).toBe(true);
+    }
     expect(imageUrlSchema.safeParse("/assets/card.jpg").success).toBe(true);
     expect(imageUrlSchema.safeParse("https://cdn.example.com/a.png").success).toBe(true);
   });
@@ -27,9 +30,11 @@ describe("product image URL validation", () => {
 });
 
 describe("tracking input", () => {
-  it("always requires a phone number", () => {
+  it("requires a token or both order number and phone number", () => {
     expect(trackSchema.safeParse({ orderNumber: "FP-2847" }).success).toBe(false);
-    expect(trackSchema.safeParse({ phone: "01712345678" }).success).toBe(true);
+    expect(trackSchema.safeParse({ phone: "01712345678" }).success).toBe(false);
+    expect(trackSchema.safeParse({ orderNumber: "FP-2847", phone: "01712345678" }).success).toBe(true);
+    expect(trackSchema.safeParse({ token: "a".repeat(64) }).success).toBe(true);
   });
 
   it("rejects injection-shaped order numbers", () => {
