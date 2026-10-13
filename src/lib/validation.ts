@@ -75,22 +75,30 @@ export const checkoutSchema = z.object({
     .max(50),
 });
 
-// The phone number on the order is the shared secret for tracking. Order
-// numbers are sequential, so an order-number-only lookup would let anyone walk
-// the counter and read every order — phone is therefore always required.
-export const trackSchema = z.object({
-  orderNumber: z
-    .string()
-    .trim()
-    .max(32)
-    .regex(/^[A-Za-z0-9-]*$/, "Order numbers look like FP-2847.")
-    .optional(),
-  phone: z
-    .string()
-    .trim()
-    .min(8, "Enter the phone number used on the order.")
-    .max(24),
-});
+// Order numbers are sequential and phone numbers are often known to others, so
+// neither alone unlocks an order. A lookup needs EITHER the unguessable
+// tracking token from the confirmation link, OR order number + phone together.
+export const trackingTokenSchema = z
+  .string()
+  .trim()
+  .regex(/^[a-f0-9]{64}$/, "That tracking link looks incomplete.");
+
+export const trackSchema = z.union([
+  z.object({ token: trackingTokenSchema }),
+  z.object({
+    orderNumber: z
+      .string()
+      .trim()
+      .min(3, "Enter the order number from your receipt.")
+      .max(32)
+      .regex(/^[A-Za-z0-9-]+$/, "Order numbers look like FP-2847."),
+    phone: z
+      .string()
+      .trim()
+      .min(8, "Enter the phone number used on the order.")
+      .max(24),
+  }),
+]);
 
 
 export function firstIssue(error: z.ZodError) {
