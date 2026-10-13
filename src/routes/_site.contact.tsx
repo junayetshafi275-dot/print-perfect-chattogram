@@ -116,27 +116,29 @@ function ContactPage() {
           {[
             {
               icon: MapPin,
-              label: "Visit us",
-              value: "Anderkilla, Chattogram, Bangladesh",
-              hint: "Chattogram's printing district",
+              label: "Location",
+              value: BUSINESS_CONTACT.streetAddress
+                ? `${BUSINESS_CONTACT.streetAddress}, ${BUSINESS_CONTACT.area}`
+                : BUSINESS_CONTACT.area,
+              hint: BUSINESS_CONTACT.streetAddress ? "Chattogram's printing district" : "Full street address coming soon",
             },
             {
               icon: Phone,
               label: "Call",
-              value: "+880 1XXX-XXXXXX",
-              hint: "Sat – Thu, business hours",
+              value: BUSINESS_CONTACT.phone ?? "Coming soon",
+              hint: BUSINESS_CONTACT.phone ? "Business hours" : CONTACT_COMING_SOON,
             },
             {
               icon: Mail,
               label: "Email",
-              value: "hello@friendsprinters.com",
-              hint: "Replies within one business day",
+              value: BUSINESS_CONTACT.email ?? "Coming soon",
+              hint: BUSINESS_CONTACT.email ? "We reply as soon as we can" : CONTACT_COMING_SOON,
             },
             {
               icon: Clock,
               label: "Hours",
-              value: "9:00 AM – 8:00 PM",
-              hint: "Closed Fridays",
+              value: BUSINESS_CONTACT.hours ?? "Coming soon",
+              hint: BUSINESS_CONTACT.hours ? "" : "Opening hours will be listed here once confirmed",
             },
           ].map((c) => (
             <div key={c.label} className="p-6 rounded-xl border border-border bg-background">
