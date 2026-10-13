@@ -17,9 +17,9 @@ export const PRODUCT_IMAGES: Record<string, string> = {
 };
 
 export function productImage(key: string | null | undefined) {
-  if (!key) return commercial;
+  if (!key || key.length > 300 || key.includes("\\") || /[\u0000-\u001f]/.test(key)) return commercial;
   if (PRODUCT_IMAGES[key]) return PRODUCT_IMAGES[key];
-  if (key.startsWith("/") && !key.startsWith("//") && !key.includes("\\")) return key;
+  if (key.startsWith("/") && !key.startsWith("//")) return key;
   try {
     const url = new URL(key);
     if (url.protocol === "https:") return url.href;
