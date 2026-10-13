@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { Loader2 } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
-import { productCategories } from "@/lib/products-data";
+import { productCategories, type Product } from "@/lib/products-data";
+import { listProducts } from "@/lib/products.functions";
+import { productImage } from "@/lib/catalog";
 
 export const Route = createFileRoute("/_site/shop")({
   head: () => ({
@@ -17,6 +22,23 @@ export const Route = createFileRoute("/_site/shop")({
 });
 
 function ShopPage() {
+  const fetchProducts = useServerFn(listProducts);
+  const { data: dbProducts, isLoading } = useQuery({
+    queryKey: ["public-products"],
+    queryFn: () => fetchProducts({}),
+  });
+
+  const managedProducts: Product[] = (dbProducts ?? []).map((p) => ({
+    id: p.slug,
+    name: p.name,
+    category: p.category,
+    image: productImage(p.imageKey),
+    price: p.isQuoteOnly ? 0 : p.price,
+    ...(p.salePrice !== null && !p.isQuoteOnly ? { originalPrice: p.price } : {}),
+    ...(p.label ? { badge: p.label } : {}),
+  }));
+  const products = managedProducts.length > 0 ? managedProducts : productCategories.flatMap((cat) => cat.products);
+
   return (
     <>
       <section className="border-b border-border bg-paper">
@@ -29,18 +51,17 @@ function ShopPage() {
         </div>
       </section>
 
-      {productCategories.map((cat, i) => (
-        <section key={cat.slug} className={i % 2 === 1 ? "bg-paper-grain" : ""}>
-          <div className="container-x py-14">
-            <h2 className="font-display text-2xl sm:text-3xl text-ink">{cat.title}</h2>
-            <div className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {cat.products.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
+      <section>
+        <div className="container-x py-14">
+          {isLoading ? (
+            <p className="flex items-center justify-center gap-2 py-12 text-sm text-ink-soft"><Loader2 className="h-4 w-4 animate-spin" /> Loading products…</p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {products.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
-          </div>
-        </section>
-      ))}
+          )}
+        </div>
+      </section>
     </>
   );
 }
