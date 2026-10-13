@@ -139,6 +139,7 @@ export type Database = {
           ssl_transaction_id: string | null
           status: Database["public"]["Enums"]["order_status"]
           total_amount: number
+          tracking_token: string
           updated_at: string
         }
         Insert: {
@@ -155,6 +156,7 @@ export type Database = {
           ssl_transaction_id?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total_amount?: number
+          tracking_token?: string
           updated_at?: string
         }
         Update: {
@@ -171,6 +173,7 @@ export type Database = {
           ssl_transaction_id?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total_amount?: number
+          tracking_token?: string
           updated_at?: string
         }
         Relationships: []
