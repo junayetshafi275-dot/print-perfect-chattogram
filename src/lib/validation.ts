@@ -9,18 +9,19 @@ export const bdPhone = z
   });
 
 /**
- * Product image locations are rendered straight into `src` attributes, so only
- * two shapes are safe:
- *  - a same-origin relative path (`/assets/x.jpg`)
- *  - an absolute https:// URL
- * Everything else (javascript:, data:, file:, ftp:, protocol-relative `//host`,
- * backslash tricks) is rejected.
+ * Product image locations can be a known bundled asset key, a same-origin
+ * relative path, or an absolute HTTPS URL. Everything else (javascript:,
+ * data:, file:, ftp:, protocol-relative //host, and backslash tricks) is
+ * rejected before it can reach an image src.
  */
+const builtInImageKeys = new Set(["commercial", "office", "marketing", "education", "event", "custom"]);
+
 export const imageUrlSchema = z
   .string()
   .trim()
   .max(300)
   .refine((value) => {
+    if (builtInImageKeys.has(value)) return true;
     if (value.includes("\\") || /[\u0000-\u001f]/.test(value)) return false;
     if (value.startsWith("//")) return false; // protocol-relative
     if (value.startsWith("/")) return true; // same-origin relative path
@@ -31,7 +32,7 @@ export const imageUrlSchema = z
       return false;
     }
     return url.protocol === "https:";
-  }, "Use a relative path like /assets/photo.jpg or a full https:// address.");
+  }, "Use a built-in image key, a relative path like /assets/photo.jpg, or a full https:// address.");
 
 export const enquirySchema = z.object({
   name: z.string().trim().min(2, "Please enter your full name.").max(100),
@@ -99,7 +100,6 @@ export const trackSchema = z.union([
       .max(24),
   }),
 ]);
-
 
 export function firstIssue(error: z.ZodError) {
   return error.issues[0]?.message ?? "Please check the details and try again.";
