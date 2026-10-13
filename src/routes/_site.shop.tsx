@@ -33,7 +33,7 @@ function ShopPage() {
     name: p.name,
     category: p.category,
     image: productImage(p.imageKey),
-    price: p.isQuoteOnly ? 0 : p.price,
+    price: p.isQuoteOnly ? 0 : (p.salePrice ?? p.price),
     ...(p.salePrice !== null && !p.isQuoteOnly ? { originalPrice: p.price } : {}),
     ...(p.label ? { badge: p.label } : {}),
   }));
