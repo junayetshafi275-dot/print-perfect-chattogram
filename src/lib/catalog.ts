@@ -5,6 +5,7 @@ import education from "@/assets/education.jpg";
 import event from "@/assets/event.jpg";
 import custom from "@/assets/custom.jpg";
 import { Briefcase, Megaphone, Sparkles, Palette, type LucideIcon } from "lucide-react";
+import { isSafeImageUrl } from "./validation";
 
 /** Image keys stored in products.image_url map to bundled assets. */
 export const PRODUCT_IMAGES: Record<string, string> = {
@@ -17,7 +18,10 @@ export const PRODUCT_IMAGES: Record<string, string> = {
 };
 
 export function productImage(key: string | null | undefined) {
-  return (key && PRODUCT_IMAGES[key]) || commercial;
+  if (!key) return commercial;
+  const value = key.trim();
+  if (isSafeImageUrl(value)) return value;
+  return PRODUCT_IMAGES[value] || commercial;
 }
 
 export const CATEGORY_META: Record<string, { title: string; eyebrow: string; icon: LucideIcon }> = {

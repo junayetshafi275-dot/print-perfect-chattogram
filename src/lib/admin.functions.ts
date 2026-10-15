@@ -168,16 +168,45 @@ export const updateOrderStatus = createServerFn({ method: "POST" })
     ),
   )
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
+    const { data: before, error: readError } = await context.supabase
       .from("orders")
-      .update({ status: data.status })
-      .eq("id", data.id);
-    if (error) {
-      const { log } = await import("./logging.server");
-      log.error("admin", "order status update failed", { error });
-      throw new Error("Could not update this order.");
+      .select("status")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (readError || !before) throw new Error("Could not update this order.");
+    const changed = before.status !== data.status;
+
+    if (changed) {
+      const { error } = await context.supabase
+        .from("orders")
+        .update({ status: data.status })
+        .eq("id", data.id);
+      if (error) {
+        const { log } = await import("./logging.server");
+        log.error("admin", "order status update failed", { error });
+        throw new Error("Could not update this order.");
+      }
     }
+
     if (data.note) {
+      if (changed) {
+        // The trigger already logged this transition; attach the note to that row.
+        const { data: latest } = await context.supabase
+          .from("order_status_history")
+          .select("id")
+          .eq("order_id", data.id)
+          .eq("status", data.status)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (latest) {
+          await context.supabase
+            .from("order_status_history")
+            .update({ note: data.note, changed_by: context.userId })
+            .eq("id", latest.id);
+          return { ok: true };
+        }
+      }
       await context.supabase
         .from("order_status_history")
         .insert({ order_id: data.id, status: data.status, note: data.note, changed_by: context.userId });
@@ -257,7 +286,7 @@ export const deleteProduct = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => parse(z.object({ id: z.string().uuid() }), input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("products").delete().eq("id", data.id);
-    if (error) throw new Error("Could not delete the product. It may be used on an existing order.");
+    if (error) throw new Error("Could not delete the product.");
     return { ok: true };
   });
 
