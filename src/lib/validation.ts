@@ -16,22 +16,29 @@ export const bdPhone = z
  * Everything else (javascript:, data:, file:, ftp:, protocol-relative `//host`,
  * backslash tricks) is rejected.
  */
+export const IMAGE_KEYS = ["commercial", "office", "marketing", "education", "event", "custom"] as const;
+
+export function isSafeImageUrl(value: string) {
+  if (value.includes("\\") || /[\u0000-\u001f]/.test(value)) return false;
+  if (value.startsWith("//")) return false; // protocol-relative
+  if (value.startsWith("/")) return true; // same-origin relative path
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+  return url.protocol === "https:";
+}
+
 export const imageUrlSchema = z
   .string()
   .trim()
   .max(300)
-  .refine((value) => {
-    if (value.includes("\\") || /[\u0000-\u001f]/.test(value)) return false;
-    if (value.startsWith("//")) return false; // protocol-relative
-    if (value.startsWith("/")) return true; // same-origin relative path
-    let url: URL;
-    try {
-      url = new URL(value);
-    } catch {
-      return false;
-    }
-    return url.protocol === "https:";
-  }, "Use a relative path like /assets/photo.jpg or a full https:// address.");
+  .refine(
+    (value) => (IMAGE_KEYS as readonly string[]).includes(value) || isSafeImageUrl(value),
+    "Use an image key, a relative path like /assets/photo.jpg or a full https:// address.",
+  );
 
 export const enquirySchema = z.object({
   name: z.string().trim().min(2, "Please enter your full name.").max(100),

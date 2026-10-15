@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { z } from "zod";
+import { useCart } from "@/lib/cart";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Loader2, PackageSearch, Search } from "lucide-react";
 import { trackOrder, type TrackedOrder } from "@/lib/tracking.functions";
@@ -19,6 +21,8 @@ export const Route = createFileRoute("/_site/track")({
     ],
     links: [{ rel: "canonical", href: "/track" }],
   }),
+  validateSearch: (search: Record<string, unknown>) =>
+    z.object({ order: z.string().max(32).optional(), payment: z.string().max(20).optional() }).catch({}).parse(search),
   component: TrackPage,
 });
 
@@ -28,7 +32,15 @@ function formatDate(iso: string) {
 
 function TrackPage() {
   const lookup = useServerFn(trackOrder);
-  const [orderNumber, setOrderNumber] = useState("");
+  const { order, payment } = Route.useSearch();
+  const { clear } = useCart();
+  const paid = payment === "success";
+  const [orderNumber, setOrderNumber] = useState(order ?? "");
+
+  useEffect(() => {
+    if (paid) clear();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paid]);
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +77,11 @@ function TrackPage() {
 
       <section>
         <div className="container-x py-14 max-w-3xl">
+          {paid && (
+            <p className="mb-6 rounded-md border border-border bg-paper p-4 text-sm text-ink">
+              Thanks! We're confirming your payment now — your order status will update shortly.
+            </p>
+          )}
           <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-[1fr_1fr_auto] items-end rounded-xl border border-border bg-card p-5 shadow-card">
             <label className="grid gap-2 text-sm">
               <span className="text-ink font-medium">Order number (optional)</span>
@@ -133,7 +150,7 @@ function OrderTimeline({ order }: { order: TrackedOrder }) {
             <p className="font-display text-2xl text-ink">{order.orderNumber}</p>
           </div>
           <div className="text-right text-sm">
-            <p className="text-ink font-medium">{statusLabel(order.status, order.city)}</p>
+            <p className="text-ink font-medium">{statusLabel(order.status)}</p>
             <p className="text-ink-soft">Updated {formatDate(order.updatedAt)}</p>
           </div>
         </div>
@@ -177,9 +194,9 @@ function OrderTimeline({ order }: { order: TrackedOrder }) {
                   </span>
                   <div className="min-w-0">
                     <p className={`text-sm ${isCurrent ? "font-semibold text-ink" : done ? "text-ink" : "text-ink-soft"}`}>
-                      {statusLabel(stage, order.city)}
+                      {statusLabel(stage)}
                     </p>
-                    <p className="mt-1 text-sm text-ink-soft">{stamp?.note ?? STATUS_BLURB[stage]}</p>
+                    <p className="mt-1 text-sm text-ink-soft">{STATUS_BLURB[stage]}</p>
                     {stamp && <p className="mt-1 text-xs text-ink-soft/80">{formatDate(stamp.createdAt)}</p>}
                   </div>
                 </li>
