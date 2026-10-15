@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_site/track")({
       { title: "Track Your Print Order | Friends Printers" },
       { name: "description", content: "Follow your Friends Printers order from press to doorstep — received, in production, shipped, at your local hub, ready for pickup or delivered." },
       { property: "og:title", content: "Track Your Order — Friends Printers" },
-      { property: "og:description", content: "Enter the phone number on your order to see exactly where your print job is." },
+      { property: "og:description", content: "Enter your order number and the phone number on your order to see where your print job is." },
       { property: "og:url", content: "/track" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -70,7 +70,7 @@ function TrackPage() {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-medium">Order Tracking</p>
           <h1 className="mt-3 font-display text-4xl sm:text-5xl text-ink">Where's my print job?</h1>
           <p className="mt-4 max-w-xl mx-auto text-ink-soft">
-            Enter the phone number you gave us — add your order number too if you have it. No login needed.
+            Enter your order number and the phone number you gave us. No login needed.
           </p>
         </div>
       </section>
@@ -84,9 +84,10 @@ function TrackPage() {
           )}
           <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-[1fr_1fr_auto] items-end rounded-xl border border-border bg-card p-5 shadow-card">
             <label className="grid gap-2 text-sm">
-              <span className="text-ink font-medium">Order number (optional)</span>
+              <span className="text-ink font-medium">Order number</span>
               <input
                 value={orderNumber}
+                required
                 onChange={(e) => setOrderNumber(e.target.value)}
                 placeholder="FP-2847"
                 className="rounded-md border border-border bg-background px-3 py-2 text-ink outline-none focus:border-primary"
@@ -120,7 +121,7 @@ function TrackPage() {
               <PackageSearch className="mx-auto h-8 w-8 text-ink-soft" />
               <h2 className="mt-3 font-display text-2xl text-ink">No order matches those details</h2>
               <p className="mt-2 text-sm text-ink-soft">
-                Double-check the order number or phone number on your receipt. Still stuck? Call the press room and we'll look it up by hand.
+                Double-check the order number and phone number on your receipt — you'll need both. Still stuck? Call the press room and we'll look it up by hand.
               </p>
             </div>
           )}
