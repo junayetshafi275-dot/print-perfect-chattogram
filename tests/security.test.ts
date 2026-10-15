@@ -37,7 +37,7 @@ describe("product image URL validation", () => {
 describe("tracking input", () => {
   it("always requires a phone number", () => {
     expect(trackSchema.safeParse({ orderNumber: "FP-2847" }).success).toBe(false);
-    expect(trackSchema.safeParse({ phone: "01712345678" }).success).toBe(true);
+    expect(trackSchema.safeParse({ phone: "01712345678", orderNumber: "FP-2847" }).success).toBe(true);
   });
 
   it("rejects injection-shaped order numbers", () => {

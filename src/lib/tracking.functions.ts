@@ -32,13 +32,13 @@ export const trackOrder = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }): Promise<{ orders: TrackedOrder[] }> => {
     const { log } = await import("./logging.server");
-    const { enforceRateLimit, enforceIpAndPhoneLimit, normalizePhone, RATE_LIMITS } = await import(
+    const { callerIp, enforceRateLimit, enforceIpAndPhoneLimit, normalizePhone, RATE_LIMITS } = await import(
       "./rate-limit.server"
     );
     const message = "Too many lookups from this connection. Please wait a few minutes and try again.";
 
     if ("token" in data) {
-      await enforceRateLimit(RATE_LIMITS.trackIp, undefined, message);
+      await enforceRateLimit({ ...RATE_LIMITS.trackIp, identifier: callerIp() }, message);
     } else {
       await enforceIpAndPhoneLimit({
         ip: RATE_LIMITS.trackIp,

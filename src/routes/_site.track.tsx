@@ -150,7 +150,7 @@ function OrderTimeline({ order }: { order: TrackedOrder }) {
             <p className="font-display text-2xl text-ink">{order.orderNumber}</p>
           </div>
           <div className="text-right text-sm">
-            <p className="text-ink font-medium">{statusLabel(order.status, order.city)}</p>
+            <p className="text-ink font-medium">{statusLabel(order.status)}</p>
             <p className="text-ink-soft">Updated {formatDate(order.updatedAt)}</p>
           </div>
         </div>
@@ -194,9 +194,9 @@ function OrderTimeline({ order }: { order: TrackedOrder }) {
                   </span>
                   <div className="min-w-0">
                     <p className={`text-sm ${isCurrent ? "font-semibold text-ink" : done ? "text-ink" : "text-ink-soft"}`}>
-                      {statusLabel(stage, order.city)}
+                      {statusLabel(stage)}
                     </p>
-                    <p className="mt-1 text-sm text-ink-soft">{stamp?.note ?? STATUS_BLURB[stage]}</p>
+                    <p className="mt-1 text-sm text-ink-soft">{STATUS_BLURB[stage]}</p>
                     {stamp && <p className="mt-1 text-xs text-ink-soft/80">{formatDate(stamp.createdAt)}</p>}
                   </div>
                 </li>
