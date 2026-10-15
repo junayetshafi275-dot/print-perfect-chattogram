@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart";
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/_site/checkout")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>) =>
+    z.object({ payment: z.string().max(20).optional() }).catch({}).parse(search),
   component: CheckoutPage,
 });
 
@@ -34,6 +37,8 @@ function CheckoutPage() {
   const { lines, subtotal, count, clear } = useCart();
   const submit = useServerFn(placeOrder);
   const navigate = useNavigate();
+  const { payment } = Route.useSearch();
+  const paymentIncomplete = payment === "failed" || payment === "cancelled";
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,11 +70,11 @@ function CheckoutPage() {
           items: lines.map((l) => ({ slug: l.slug, quantity: l.quantity })),
         },
       });
-      clear();
       if (result.gatewayUrl) {
         window.location.href = result.gatewayUrl;
         return;
       }
+      clear();
       setPlaced(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : "We couldn't place your order. Please try again.");
@@ -95,7 +100,7 @@ function CheckoutPage() {
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <button
             type="button"
-            onClick={() => navigate({ to: "/track" })}
+            onClick={() => navigate({ to: "/track", search: { order: placed.orderNumber } })}
             className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
           >
             Track this order
@@ -134,6 +139,11 @@ function CheckoutPage() {
       </section>
 
       <section className="container-x py-14 max-w-4xl">
+        {paymentIncomplete && (
+          <p role="alert" className="mb-6 rounded-md border border-primary/40 bg-paper p-4 text-sm text-ink">
+            Your payment wasn't completed. Your cart is still here, you can try again or choose another method.
+          </p>
+        )}
         <form onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1fr_320px] items-start">
           <div className="grid gap-4 rounded-xl border border-border bg-card p-6 shadow-card sm:grid-cols-2">
             <label className="grid gap-2 text-sm">

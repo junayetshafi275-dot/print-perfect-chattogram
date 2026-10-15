@@ -23,6 +23,7 @@ import { Route as SiteCartRouteImport } from './routes/_site.cart'
 import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicSslcommerzReturnRouteImport } from './routes/api/public/sslcommerz/return'
 import { Route as ApiPublicSslcommerzIpnRouteImport } from './routes/api/public/sslcommerz/ipn'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -93,6 +94,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicSslcommerzReturnRoute =
+  ApiPublicSslcommerzReturnRouteImport.update({
+    id: '/api/public/sslcommerz/return',
+    path: '/api/public/sslcommerz/return',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSslcommerzIpnRoute = ApiPublicSslcommerzIpnRouteImport.update({
   id: '/api/public/sslcommerz/ipn',
   path: '/api/public/sslcommerz/ipn',
@@ -113,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof SiteShopRoute
   '/track': typeof SiteTrackRoute
   '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
+  '/api/public/sslcommerz/return': typeof ApiPublicSslcommerzReturnRoute
 }
 export interface FileRoutesByTo {
   '/': typeof SiteIndexRoute
@@ -128,6 +136,7 @@ export interface FileRoutesByTo {
   '/shop': typeof SiteShopRoute
   '/track': typeof SiteTrackRoute
   '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
+  '/api/public/sslcommerz/return': typeof ApiPublicSslcommerzReturnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -146,6 +155,7 @@ export interface FileRoutesById {
   '/_site/track': typeof SiteTrackRoute
   '/_site/': typeof SiteIndexRoute
   '/api/public/sslcommerz/ipn': typeof ApiPublicSslcommerzIpnRoute
+  '/api/public/sslcommerz/return': typeof ApiPublicSslcommerzReturnRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/track'
     | '/api/public/sslcommerz/ipn'
+    | '/api/public/sslcommerz/return'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/track'
     | '/api/public/sslcommerz/ipn'
+    | '/api/public/sslcommerz/return'
   id:
     | '__root__'
     | '/_authenticated'
@@ -195,6 +207,7 @@ export interface FileRouteTypes {
     | '/_site/track'
     | '/_site/'
     | '/api/public/sslcommerz/ipn'
+    | '/api/public/sslcommerz/return'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,6 +216,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicSslcommerzIpnRoute: typeof ApiPublicSslcommerzIpnRoute
+  ApiPublicSslcommerzReturnRoute: typeof ApiPublicSslcommerzReturnRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -305,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/sslcommerz/return': {
+      id: '/api/public/sslcommerz/return'
+      path: '/api/public/sslcommerz/return'
+      fullPath: '/api/public/sslcommerz/return'
+      preLoaderRoute: typeof ApiPublicSslcommerzReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/sslcommerz/ipn': {
       id: '/api/public/sslcommerz/ipn'
       path: '/api/public/sslcommerz/ipn'
@@ -358,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicSslcommerzIpnRoute: ApiPublicSslcommerzIpnRoute,
+  ApiPublicSslcommerzReturnRoute: ApiPublicSslcommerzReturnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { imageUrlSchema, enquirySchema, trackSchema, checkoutSchema } from "../src/lib/validation";
+import { returnTarget } from "../src/routes/api/public/sslcommerz/return";
 import { buildCsp, securityHeaders, shouldSetFrameOptions } from "../src/lib/security-headers";
 import { normalizeIp, normalizePhone } from "../src/lib/rate-limit.server";
 import { __redactForTest, maskIdentifier } from "../src/lib/logging.server";
@@ -8,6 +9,13 @@ describe("product image URL validation", () => {
   it("accepts relative paths and https URLs", () => {
     expect(imageUrlSchema.safeParse("/assets/card.jpg").success).toBe(true);
     expect(imageUrlSchema.safeParse("https://cdn.example.com/a.png").success).toBe(true);
+  });
+
+  it("accepts the known asset keys", () => {
+    for (const key of ["commercial", "office", "marketing", "education", "event", "custom"]) {
+      expect(imageUrlSchema.safeParse(key).success, key).toBe(true);
+    }
+    expect(imageUrlSchema.safeParse("unknown-key").success).toBe(false);
   });
 
   it("rejects dangerous schemes and tricks", () => {
@@ -136,5 +144,15 @@ describe("log redaction", () => {
 
   it("keeps only a short suffix of an identifier", () => {
     expect(maskIdentifier("01712345678")).toBe("***5678");
+  });
+});
+
+describe("SSLCommerz return redirect", () => {
+  const t = (q: string) => returnTarget(new URL(`https://x.test/api/public/sslcommerz/return?${q}`));
+  it("maps results to pages and validates the order number", () => {
+    expect(t("result=success&order=FP-2851")).toBe("/track?order=FP-2851&payment=success");
+    expect(t("result=fail&order=FP-2851")).toBe("/checkout?payment=failed");
+    expect(t("result=cancel&order=FP-2851")).toBe("/checkout?payment=cancelled");
+    expect(t("result=success&order=%3Cscript%3E")).toBe("/track");
   });
 });
